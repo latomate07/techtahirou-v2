@@ -40,6 +40,8 @@ services:
       MYSQL_USER: strapi_user
       MYSQL_PASSWORD: strapi_password
       MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
@@ -52,8 +54,8 @@ services:
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: rootpassword
-    expose:
-      - 8081
+    ports:
+      - "8081:80"
     depends_on:
       - mysql
     networks:

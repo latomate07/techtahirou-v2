@@ -1,5 +1,4 @@
-# app/backoffice/Dockerfile
-FROM node:20-alpine
+FROM node:23-slim
 
 WORKDIR /app
 

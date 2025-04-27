@@ -1,5 +1,4 @@
-# app/frontend/Dockerfile
-FROM node:20-alpine as build-stage
+FROM node:23-slim as build-stage
 
 WORKDIR /app
 
