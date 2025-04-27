@@ -22,8 +22,8 @@ services:
       - DATABASE_USERNAME=strapi_user
       - DATABASE_PASSWORD=strapi_password
       - NODE_ENV=production
-    expose:
-      - 1337
+    ports:
+      - "1337:1337"
     depends_on:
       - mysql
     networks:

@@ -7,6 +7,9 @@ RUN npm install
 
 COPY . .
 
+# Build l'admin before launching Strapi
+RUN npm run build
+
 EXPOSE 1337
 
 CMD ["npm", "run", "start"]
