@@ -53,7 +53,7 @@ services:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: rootpassword
     expose:
-      - 80
+      - 8081
     depends_on:
       - mysql
     networks:

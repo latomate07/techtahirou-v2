@@ -1,0 +1,39 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+logs
+*.log
+
+# Docker
+docker-compose.override.yml
+mysql-data/
+docker-data/
+docker-logs/
+
+# Strapi uploads
+app/backoffice/public/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vscode
+.vscode/
+
+# Others
+*.sqlite
+*.zip
+*.tar
+*.tar.gz
