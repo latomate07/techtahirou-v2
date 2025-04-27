@@ -1,0 +1,16 @@
+{
+    "collectionName": "components_project_steps",
+    "info": {
+        "name": "Step",
+        "icon": "list",
+        "displayName": "Step"
+    },
+    "attributes": {
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "text"
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "collectionName": "components_project_solutions",
+    "info": {
+        "name": "Solution",
+        "icon": "lightbulb",
+        "displayName": "Solution"
+    },
+    "attributes": {
+        "content": {
+            "type": "text"
+        }
+    }
+}

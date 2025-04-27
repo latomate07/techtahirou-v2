@@ -1,0 +1,65 @@
+{
+  "collectionName": "projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "string"
+    },
+    "shortDesc": {
+      "type": "text"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "date": {
+      "type": "date"
+    },
+    "client": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false
+    },
+    "tech": {
+      "type": "component",
+      "repeatable": true,
+      "component": "project.tech"
+    },
+    "liveLink": {
+      "type": "string"
+    },
+    "repoLink": {
+      "type": "string"
+    },
+    "process": {
+      "type": "component",
+      "repeatable": true,
+      "component": "project.step"
+    },
+    "challenges": {
+      "type": "component",
+      "repeatable": true,
+      "component": "project.challenge"
+    },
+    "solutions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "project.solution"
+    }
+  }
+}

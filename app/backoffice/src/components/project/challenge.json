@@ -1,0 +1,13 @@
+{
+    "collectionName": "components_project_challenges",
+    "info": {
+        "name": "Challenge",
+        "icon": "exclamation-circle",
+        "displayName": "Challenge"
+    },
+    "attributes": {
+        "content": {
+            "type": "text"
+        }
+    }
+}

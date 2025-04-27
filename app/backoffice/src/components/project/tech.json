@@ -1,0 +1,13 @@
+{
+    "collectionName": "components_project_techs",
+    "info": {
+        "name": "Tech",
+        "icon": "cpu",
+        "displayName": "Tech"
+    },
+    "attributes": {
+        "content": {
+            "type": "text"
+        }
+    }
+}
