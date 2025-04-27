@@ -1,0 +1,22 @@
+{
+  "collectionName": "contact_infos",
+  "info": {
+    "singularName": "contact-info",
+    "pluralName": "contact-infos",
+    "displayName": "Contact Info"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "email": {
+      "type": "email"
+    },
+    "github": {
+      "type": "string"
+    },
+    "linkedin": {
+      "type": "string"
+    }
+  }
+}

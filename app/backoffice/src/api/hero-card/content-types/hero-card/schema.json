@@ -1,0 +1,35 @@
+{
+  "collectionName": "hero_cards",
+  "info": {
+    "singularName": "hero-card",
+    "pluralName": "hero-cards",
+    "displayName": "Hero Card"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "jobTitle": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "avatar": {
+      "type": "media",
+      "multiple": false
+    },
+    "yearsExperience": {
+      "type": "integer"
+    },
+    "projectsCompleted": {
+      "type": "integer"
+    },
+    "clientSatisfaction": {
+      "type": "integer"
+    }
+  }
+}

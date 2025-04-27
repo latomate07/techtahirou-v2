@@ -1,0 +1,17 @@
+{
+  "collectionName": "current_statuses",
+  "info": {
+    "singularName": "current-status",
+    "pluralName": "current-statuses",
+    "displayName": "Current Status"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "content": {
+      "type": "string",
+      "required": true
+    }
+  }
+}
