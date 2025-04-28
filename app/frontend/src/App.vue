@@ -14,6 +14,12 @@ const filteredSkills = ref([]);
 const currentStatus = ref(null);
 const contactInfos = ref(null);
 const heroCard = ref(null);
+const contactForm = ref({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+});
 
 // Fetch all collections from Strapi
 const fetchCollections = async () => {
@@ -37,8 +43,8 @@ const fetchCollections = async () => {
             date: item.date,
             client: item.client,
             role: item.role,
-            image: item.image?.data?.attributes?.url
-                ? `${API_URL}${item.image.data.attributes.url}`
+            image: item.image?.url
+                ? `${API_URL}${item.image.url}`
                 : '',
             tech: item.tech || [],
             liveLink: item.liveLink || '#',
@@ -102,6 +108,55 @@ const filterSkills = (e) => {
         filteredSkills.value = skills.value;
     }
 };
+
+// Send email
+const sendEmail = async (e) => {
+  e.preventDefault();
+
+  const API_URL = import.meta.env.VITE_API_URL;
+  const API_TOKEN = import.meta.env.VITE_API_TOKEN;
+  const API_EMAIL_RECEIVER = import.meta.env.VITE_API_EMAIL_RECEIVER;
+
+  try {
+    const response = await fetch(`${API_URL}/api/email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        to: API_EMAIL_RECEIVER,
+        from: contactForm.email,
+        subject: 'Nouveau message de contact: ' + contactForm.subject,
+        text: `
+            Name: ${contactForm.name}
+            Email: ${contactForm.email}
+            Subject: ${contactForm.subject}
+            Message: ${contactForm.message}
+        `,
+        html: `
+            <p><strong>Name:</strong> ${contactForm.name}</p>
+            <p><strong>Email:</strong> ${contactForm.email}</p>
+            <p><strong>Subject:</strong> ${contactForm.subject}</p>
+            <p><strong>Message:</strong></p>
+            <p>${contactForm.message}</p>
+        `,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send email');
+    }
+
+    const result = await response.json();
+    console.log('Email sent successfully:', result);
+    return result;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
+  }
+};
+
 
 watch(
     () => skills.value,
@@ -206,8 +261,8 @@ onMounted(() => {
                 </button>
                 <a @click="isMenuOpen = false" href="#" class="hover:text-indigo-400 transition-colors">Accueil</a>
                 <a @click="isMenuOpen = false" href="#projects"
-                    class="hover:text-indigo-400 transition-colors">Projects</a>
-                <a @click="isMenuOpen = false" href="#about" class="hover:text-indigo-400 transition-colors">About</a>
+                    class="hover:text-indigo-400 transition-colors">Projets</a>
+                <a @click="isMenuOpen = false" href="#about" class="hover:text-indigo-400 transition-colors">À propos</a>
                 <a @click="isMenuOpen = false" href="#contact"
                     class="hover:text-indigo-400 transition-colors">Contact</a>
             </div>
@@ -433,11 +488,13 @@ onMounted(() => {
                                 <!-- Fixed SVG for all -->
                                 <div
                                     class="w-full h-full bg-gradient-to-br from-indigo-900/30 to-gray-800 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-500/30"
+                                    <svg v-if="!project.image" xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-500/30"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
+                                    <img v-else :src="project.image" alt="Project Image"
+                                        class="w-full h-full object-cover rounded-2xl">
                                 </div>
                             </div>
 
@@ -655,36 +712,36 @@ onMounted(() => {
                         N'hésitez pas à me contacter !
                     </p>
 
-                    <form class="space-y-4 mb-6">
+                    <form @submit.prevent="sendEmail" class="space-y-4 mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-400 mb-1">Nom</label>
-                                <input type="text" id="name"
+                                <input type="text" id="name" v-model="contactForm.name"
                                     class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                     placeholder="Votre nom">
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-400 mb-1">Email</label>
-                                <input type="email" id="email"
+                                <input type="email" id="email" v-model="contactForm.email"
                                     class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                     placeholder="Votre email">
                             </div>
                         </div>
                         <div>
                             <label for="subject" class="block text-sm font-medium text-gray-400 mb-1">Sujet</label>
-                            <input type="text" id="subject"
+                            <input type="text" id="subject" v-model="contactForm.subject"
                                 class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 placeholder="Sujet">
                         </div>
                         <div>
                             <label for="message" class="block text-sm font-medium text-gray-400 mb-1">Message</label>
-                            <textarea id="message" rows="4"
+                            <textarea id="message" rows="4" v-model="contactForm.message"
                                 class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 placeholder="Dites-moi tout..."></textarea>
                         </div>
                         <button type="submit" @mouseenter="isHoveringInteractive = true"
                             @mouseleave="isHoveringInteractive = false"
-                            class="w-full relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white py-3 rounded-lg transition-all group hover:shadow-lg hover:shadow-indigo-500/20">
+                            class="w-full cursor-pointer relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white py-3 rounded-lg transition-all group hover:shadow-lg hover:shadow-indigo-500/20">
                             <span class="relative z-10">
                                 Envoyer
                             </span>
