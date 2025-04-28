@@ -6,249 +6,102 @@ const isMenuOpen = ref(false);
 const cursorPosition = ref({ x: 0, y: 0 });
 const isHoveringInteractive = ref(false);
 
-const projects = ref([
-    {
-        id: 1,
-        title: "E-Commerce Dashboard",
-        category: "Web App",
-        shortDesc: "Modern dashboard for managing online store products, orders, and analytics.",
-        description: "A comprehensive dashboard for e-commerce businesses to manage their products, track orders, analyze sales metrics, and gain insights about customer behavior. Built with Vue.js and Tailwind CSS, this application features real-time updates, responsive design, and interactive charts.",
-        date: "Apr 2025",
-        client: "ShopifyPlus",
-        role: "Lead Developer",
-        image: "https://picsum.photos/800/600",
-        tech: ["Vue.js", "Tailwind CSS", "Vuex", "Chart.js", "Firebase"],
-        liveLink: "#",
-        repoLink: "#",
-        process: [
-            {
-                title: "Research & Planning",
-                description: "Conducted user research to understand pain points of e-commerce managers and planned features accordingly."
-            },
-            {
-                title: "Design & Prototyping",
-                description: "Created wireframes and interactive prototypes to test user flow and gather feedback."
-            },
-            {
-                title: "Development",
-                description: "Implemented the dashboard using Vue.js with component-based architecture for scalability."
-            },
-            {
-                title: "Testing & Deployment",
-                description: "Conducted extensive testing and optimized performance before deploying to production."
-            }
-        ],
-        challenges: [
-            "Handling real-time data updates without impacting performance",
-            "Creating intuitive interfaces for complex data visualization",
-            "Ensuring mobile responsiveness for all dashboard components"
-        ],
-        solutions: [
-            "Implemented efficient state management with Vuex and lazy loading",
-            "Designed modular chart components with customizable parameters",
-            "Used Tailwind CSS grid system with custom breakpoints for responsive layouts"
-        ]
-    },
-    {
-        id: 2,
-        title: "Travel Blog Platform",
-        category: "Website",
-        shortDesc: "Interactive travel blog with dynamic maps and content management.",
-        description: "A feature-rich travel blog platform allowing users to share their journeys with interactive maps, photo galleries, and detailed travel guides. The platform includes a custom CMS for easy content management.",
-        date: "Feb 2025",
-        client: "Wanderlust Media",
-        role: "Frontend Developer",
-        image: "https://picsum.photos/800/600",
-        tech: ["Vue.js", "Tailwind CSS", "Leaflet.js", "Strapi CMS"],
-        liveLink: "#",
-        repoLink: "#",
-        process: [
-            {
-                title: "Concept Development",
-                description: "Worked with travel bloggers to identify key features and content presentation needs."
-            },
-            {
-                title: "UX/UI Design",
-                description: "Created detailed wireframes and visual designs focused on showcasing travel photography."
-            },
-            {
-                title: "Frontend Development",
-                description: "Built the frontend using Vue.js with optimized image loading and map integrations."
-            },
-            {
-                title: "CMS Integration",
-                description: "Integrated Strapi CMS with custom content types for blog posts and travel guides."
-            }
-        ],
-        challenges: [
-            "Optimizing image loading for users with limited bandwidth",
-            "Creating interactive maps that work across devices",
-            "Designing an intuitive authoring experience"
-        ],
-        solutions: [
-            "Implemented lazy loading and responsive images with multiple breakpoints",
-            "Used Leaflet.js with custom controls for touch and mouse interactions",
-            "Created a WYSIWYG editor with custom components for travel content"
-        ]
-    },
-    {
-        id: 3,
-        title: "Fitness Tracking App",
-        category: "Mobile App",
-        shortDesc: "Progressive web app for tracking workouts and nutrition goals.",
-        description: "A comprehensive fitness tracking PWA that helps users monitor workouts, track nutrition, and achieve fitness goals. Features include workout planning, progress visualization, and social challenges.",
-        date: "Jan 2025",
-        client: "FitLife",
-        role: "Full Stack Developer",
-        image: "https://picsum.photos/800/600",
-        tech: ["Vue.js", "Tailwind CSS", "Pinia", "Node.js", "MongoDB"],
-        liveLink: "#",
-        repoLink: "#",
-        process: [
-            {
-                title: "Market Research",
-                description: "Analyzed existing fitness apps to identify opportunities for improvement."
-            },
-            {
-                title: "User Journey Mapping",
-                description: "Created detailed user journeys for different fitness goals and experience levels."
-            },
-            {
-                title: "MVP Development",
-                description: "Developed core tracking features and tested with a small group of fitness enthusiasts."
-            },
-            {
-                title: "Expansion & Refinement",
-                description: "Added social features and refined UX based on initial user feedback."
-            }
-        ],
-        challenges: [
-            "Creating intuitive workout logging interfaces",
-            "Ensuring offline functionality for gym usage",
-            "Developing meaningful progress visualizations"
-        ],
-        solutions: [
-            "Designed a drag-and-drop workout builder with exercise library",
-            "Implemented service workers for offline data storage and sync",
-            "Created custom chart components with animation for progress tracking"
-        ]
-    },
-    {
-        id: 4,
-        title: "AI Content Assistant",
-        category: "SaaS",
-        shortDesc: "AI-powered web tool for content creators, writers, and marketers.",
-        description: "An AI-powered content creation platform that helps writers, marketers, and content creators generate ideas, improve their writing, and optimize content for different channels and audiences.",
-        date: "Mar 2025",
-        client: "ContentLab",
-        role: "Frontend Lead",
-        image: "https://picsum.photos/800/600",
-        tech: ["Vue.js", "Tailwind CSS", "TypeScript", "OpenAI API", "Express.js"],
-        liveLink: "#",
-        repoLink: "#",
-        process: [
-            {
-                title: "AI Integration Planning",
-                description: "Researched and planned integration with language models for various content generation tasks."
-            },
-            {
-                title: "UX Design for AI Tools",
-                description: "Designed intuitive interfaces for complex AI interactions and content editing."
-            },
-            {
-                title: "Frontend Implementation",
-                description: "Built the application with Vue.js using TypeScript for type safety and scalability."
-            },
-            {
-                title: "Testing & Optimization",
-                description: "Conducted extensive usability testing and optimized AI response handling."
-            }
-        ],
-        challenges: [
-            "Creating intuitive interfaces for complex AI interactions",
-            "Managing asynchronous AI requests with good UX",
-            "Ensuring content quality and relevance across different use cases"
-        ],
-        solutions: [
-            "Designed a conversational UI with clear context controls",
-            "Implemented optimistic UI updates with loading states and fallbacks",
-            "Created content quality scoring system with improvement suggestions"
-        ]
-    },
-    {
-        id: 5,
-        title: "NFT Marketplace",
-        category: "Web3",
-        shortDesc: "Blockchain-based platform for digital artists to mint and sell NFTs.",
-        description: "A modern NFT marketplace that allows digital artists to mint, showcase, and sell their artwork as non-fungible tokens. The platform features a gallery-like experience with artist profiles, collections, and auction functionality.",
-        date: "Dec 2024",
-        client: "CryptoArts",
-        role: "Frontend Developer",
-        image: "https://picsum.photos/800/600",
-        tech: ["Vue.js", "Tailwind CSS", "Ethers.js", "IPFS", "Web3 Auth"],
-        liveLink: "#",
-        repoLink: "#",
-        process: [
-            {
-                title: "Blockchain Research",
-                description: "Researched NFT standards and marketplace mechanics to design the platform architecture."
-            },
-            {
-                title: "UX/UI Design",
-                description: "Created a gallery-inspired interface focusing on artwork presentation and discovery."
-            },
-            {
-                title: "Smart Contract Integration",
-                description: "Implemented frontend integration with ERC-721 and ERC-1155 smart contracts."
-            },
-            {
-                title: "Testing & Security",
-                description: "Conducted thorough testing and security audits of Web3 interactions."
-            }
-        ],
-        challenges: [
-            "Creating a seamless Web3 onboarding experience",
-            "Optimizing for network latency and transaction confirmation",
-            "Designing intuitive interfaces for blockchain concepts"
-        ],
-        solutions: [
-            "Implemented multi-wallet support with simplified onboarding flows",
-            "Created optimistic UI updates with transaction monitoring",
-            "Developed visual explainers and tooltips for complex concepts"
-        ]
-    }
-]);
+// Strapi collections
+const projects = ref([]);
+const abouts = ref([]);
+const skills = ref([]);
+const currentStatus = ref(null);
+const contactInfos = ref(null);
 
-// Track cursor position for interactive effects
+// Fetch all collections from Strapi
+const fetchCollections = async () => {
+  const API_URL = import.meta.env.VITE_API_URL;
+  const API_TOKEN = import.meta.env.VITE_API_TOKEN;
+
+  const headers = {
+    Authorization: `Bearer ${API_TOKEN}`,
+  };
+
+  try {
+    // Fetch Projects
+    const projectsRes = await fetch(`${API_URL}/api/projects?populate=*`, { headers });
+    const projectsData = await projectsRes.json();
+    projects.value = projectsData.data.map((item) => ({
+      id: item.id,
+      title: item.attributes.title,
+      category: item.attributes.category,
+      shortDesc: item.attributes.shortDesc,
+      description: item.attributes.description,
+      date: item.attributes.date,
+      client: item.attributes.client,
+      role: item.attributes.role,
+      image: item.attributes.image?.data?.attributes?.url
+        ? `${API_URL}${item.attributes.image.data.attributes.url}`
+        : '',
+      tech: item.attributes.tech || [],
+      liveLink: item.attributes.liveLink || '#',
+      repoLink: item.attributes.repoLink || '#',
+      process: item.attributes.process || [],
+      challenges: item.attributes.challenges || [],
+      solutions: item.attributes.solutions || [],
+    }));
+
+    // Fetch About
+    const aboutRes = await fetch(`${API_URL}/api/abouts`, { headers });
+    const aboutData = await aboutRes.json();
+    abouts.value = aboutData.data.map(item => item.attributes);
+
+    // Fetch Skills
+    const skillsRes = await fetch(`${API_URL}/api/skills`, { headers });
+    const skillsData = await skillsRes.json();
+    skills.value = skillsData.data.map(item => item.attributes.name);
+
+    // Fetch Current Status
+    const statusRes = await fetch(`${API_URL}/api/current-status`, { headers });
+    const statusData = await statusRes.json();
+    currentStatus.value = statusData.data?.attributes?.text || null;
+
+    // Fetch Contact Info
+    const contactRes = await fetch(`${API_URL}/api/contact-infos`, { headers });
+    const contactData = await contactRes.json();
+    contactInfos.value = contactData.data.map(item => item.attributes);
+
+  } catch (error) {
+    console.error('Failed to fetch collections:', error);
+  }
+};
+
+// Update cursor position based on mouse movement
 const updateCursorPosition = (e) => {
-    cursorPosition.value = { x: e.clientX, y: e.clientY };
+  cursorPosition.value = { x: e.clientX, y: e.clientY };
 };
 
-// Method to select and show project details
+// Select a project and scroll to the project section
 const selectProject = (project) => {
-    selectedProject.value = project;
-    isMenuOpen.value = false;
-    setTimeout(() => {
-        document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+  selectedProject.value = project;
+  isMenuOpen.value = false;
+  setTimeout(() => {
+    document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+  }, 100);
 };
 
-// Add scroll animation
+// Setup event listeners and load data on mount
 onMounted(() => {
-    window.addEventListener('mousemove', updateCursorPosition);
+  window.addEventListener('mousemove', updateCursorPosition);
+  fetchCollections();
 
-    // Intersection Observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-fadeInUp');
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.animate-on-scroll').forEach(el => {
-        observer.observe(el);
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-fadeInUp');
+      }
     });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    observer.observe(el);
+  });
 });
 </script>
 
