@@ -15,6 +15,5 @@
     "year": {
       "type": "integer"
     }
-  },
-  "kind": "collectionType"
+  }
 }

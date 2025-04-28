@@ -18,6 +18,5 @@
     "linkedin": {
       "type": "string"
     }
-  },
-  "kind": "collectionType"
+  }
 }

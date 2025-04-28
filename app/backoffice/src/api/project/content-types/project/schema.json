@@ -61,6 +61,5 @@
       "repeatable": true,
       "component": "project.solution"
     }
-  },
-  "kind": "collectionType"
+  }
 }

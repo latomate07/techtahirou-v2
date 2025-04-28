@@ -4,4 +4,4 @@
 
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreService('api::dd.dd' as any as any);
+export default factories.createCoreService('api::contact-info.contact-info' as any as any);
