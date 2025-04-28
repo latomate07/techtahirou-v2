@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const selectedProject = ref(null);
 const isMenuOpen = ref(false);
@@ -10,98 +10,124 @@ const isHoveringInteractive = ref(false);
 const projects = ref([]);
 const abouts = ref([]);
 const skills = ref([]);
+const filteredSkills = ref([]);
 const currentStatus = ref(null);
 const contactInfos = ref(null);
+const heroCard = ref(null);
 
 // Fetch all collections from Strapi
 const fetchCollections = async () => {
-  const API_URL = import.meta.env.VITE_API_URL;
-  const API_TOKEN = import.meta.env.VITE_API_TOKEN;
+    const API_URL = import.meta.env.VITE_API_URL;
+    const API_TOKEN = import.meta.env.VITE_API_TOKEN;
 
-  const headers = {
-    Authorization: `Bearer ${API_TOKEN}`,
-  };
+    const headers = {
+        Authorization: `Bearer ${API_TOKEN}`,
+    };
 
-  try {
-    // Fetch Projects
-    const projectsRes = await fetch(`${API_URL}/api/projects?populate=*`, { headers });
-    const projectsData = await projectsRes.json();
-    projects.value = projectsData.data.map((item) => ({
-      id: item.id,
-      title: item.attributes.title,
-      category: item.attributes.category,
-      shortDesc: item.attributes.shortDesc,
-      description: item.attributes.description,
-      date: item.attributes.date,
-      client: item.attributes.client,
-      role: item.attributes.role,
-      image: item.attributes.image?.data?.attributes?.url
-        ? `${API_URL}${item.attributes.image.data.attributes.url}`
-        : '',
-      tech: item.attributes.tech || [],
-      liveLink: item.attributes.liveLink || '#',
-      repoLink: item.attributes.repoLink || '#',
-      process: item.attributes.process || [],
-      challenges: item.attributes.challenges || [],
-      solutions: item.attributes.solutions || [],
-    }));
+    try {
+        // Fetch Projects
+        const projectsRes = await fetch(`${API_URL}/api/projects?populate=*`, { headers });
+        const projectsData = await projectsRes.json();
+        projects.value = projectsData.data.map((item) => ({
+            id: item.id,
+            title: item.title,
+            category: item.category,
+            shortDesc: item.shortDesc,
+            description: item.description,
+            date: item.date,
+            client: item.client,
+            role: item.role,
+            image: item.image?.data?.attributes?.url
+                ? `${API_URL}${item.image.data.attributes.url}`
+                : '',
+            tech: item.tech || [],
+            liveLink: item.liveLink || '#',
+            repoLink: item.repoLink || '#',
+            process: item.process || [],
+            challenges: item.challenges || [],
+            solutions: item.solutions || [],
+        }));
 
-    // Fetch About
-    const aboutRes = await fetch(`${API_URL}/api/abouts`, { headers });
-    const aboutData = await aboutRes.json();
-    abouts.value = aboutData.data.map(item => item.attributes);
+        // Fetch About
+        const aboutRes = await fetch(`${API_URL}/api/abouts`, { headers });
+        const aboutData = await aboutRes.json();
+        abouts.value = aboutData.data;
 
-    // Fetch Skills
-    const skillsRes = await fetch(`${API_URL}/api/skills`, { headers });
-    const skillsData = await skillsRes.json();
-    skills.value = skillsData.data.map(item => item.attributes.name);
+        // Fetch Skills
+        const skillsRes = await fetch(`${API_URL}/api/skills`, { headers });
+        const skillsData = await skillsRes.json();
+        skills.value = skillsData.data.map(item => item.name);
 
-    // Fetch Current Status
-    const statusRes = await fetch(`${API_URL}/api/current-status`, { headers });
-    const statusData = await statusRes.json();
-    currentStatus.value = statusData.data?.attributes?.text || null;
+        // Fetch Current Status
+        const statusRes = await fetch(`${API_URL}/api/current-statuses`, { headers });
+        const statusData = await statusRes.json();
+        currentStatus.value = statusData.data;
 
-    // Fetch Contact Info
-    const contactRes = await fetch(`${API_URL}/api/contact-infos`, { headers });
-    const contactData = await contactRes.json();
-    contactInfos.value = contactData.data.map(item => item.attributes);
+        // Fetch Contact Info
+        const contactRes = await fetch(`${API_URL}/api/contact-infos`, { headers });
+        const contactData = await contactRes.json();
+        contactInfos.value = contactData.data;
 
-  } catch (error) {
-    console.error('Failed to fetch collections:', error);
-  }
+        // Fetch Hero Card
+        const heroRes = await fetch(`${API_URL}/api/hero-cards`, { headers });
+        const heroData = await heroRes.json();
+        heroCard.value = heroData.data;
+    } catch (error) {
+        console.error('Failed to fetch collections:', error);
+    }
 };
 
 // Update cursor position based on mouse movement
 const updateCursorPosition = (e) => {
-  cursorPosition.value = { x: e.clientX, y: e.clientY };
+    cursorPosition.value = { x: e.clientX, y: e.clientY };
 };
 
 // Select a project and scroll to the project section
 const selectProject = (project) => {
-  selectedProject.value = project;
-  isMenuOpen.value = false;
-  setTimeout(() => {
-    document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
-  }, 100);
+    selectedProject.value = project;
+    isMenuOpen.value = false;
+    setTimeout(() => {
+        document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
 };
+
+// Filter skills based on the search input
+const filterSkills = (e) => {
+    const searchTerm = e.target.value;
+    if (searchTerm) {
+        filteredSkills.value = skills.value.filter(skill =>
+            skill.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    } else {
+        filteredSkills.value = skills.value;
+    }
+};
+
+watch(
+    () => skills.value,
+    (newSkills) => {
+        filteredSkills.value = newSkills;
+    },
+    { immediate: true }
+);
 
 // Setup event listeners and load data on mount
 onMounted(() => {
-  window.addEventListener('mousemove', updateCursorPosition);
-  fetchCollections();
+    window.addEventListener('mousemove', updateCursorPosition);
+    fetchCollections();
 
-  // Scroll animations
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate-fadeInUp');
-      }
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fadeInUp');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
     });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.animate-on-scroll').forEach(el => {
-    observer.observe(el);
-  });
 });
 </script>
 
@@ -202,7 +228,7 @@ onMounted(() => {
                         Je transforme des défis complexes en solutions intuitives.
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <button @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                        <a href="#projects" @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
                             class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-8 py-4 rounded-xl transition-all group hover:shadow-xl hover:shadow-indigo-500/20">
                             <span class="relative z-10 flex items-center">
                                 Explorer mes projets
@@ -214,8 +240,8 @@ onMounted(() => {
                             </span>
                             <span
                                 class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                        </button>
-                        <button @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                        </a>
+                        <a href="#contact" @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
                             class="relative overflow-hidden border-2 border-indigo-600 text-indigo-400 px-8 py-4 rounded-xl transition-all group hover:bg-indigo-600 hover:text-white">
                             <span class="relative z-10 flex items-center">
                                 Contactez-moi
@@ -227,15 +253,14 @@ onMounted(() => {
                             </span>
                             <span
                                 class="absolute inset-0 bg-indigo-600 opacity-0 group-hover:opacity-10 transition-opacity"></span>
-                        </button>
+                        </a>
                     </div>
 
                     <div class="flex flex-wrap gap-6 pt-4">
-                        <div class="flex items-center">
+                        <div v-if="currentStatus && currentStatus.length > 0" class="flex items-center">
                             <div class="w-3 h-3 rounded-full bg-green-500 mr-2 animate-pulse"></div>
                             <span class="text-sm text-gray-400">
-                                <span class="font-semibold">Statut:</span> En recherche d'une alternance pour l'année
-                                2025
+                                <span class="font-semibold">Statut:</span> {{ currentStatus[0].content }}
                             </span>
                         </div>
                     </div>
@@ -249,22 +274,18 @@ onMounted(() => {
                         class="absolute -bottom-8 -right-8 w-40 h-40 rounded-full bg-gradient-to-br from-blue-600/20 to-purple-600/20 blur-xl">
                     </div>
 
-                    <!-- Carte principale -->
                     <div
                         class="relative z-10 bg-gray-900/50 backdrop-blur-lg rounded-3xl border border-gray-700/50 overflow-hidden shadow-2xl shadow-indigo-500/10 transform transition-all duration-500 hover:shadow-indigo-500/20">
-                        <!-- Effet de vague animé en haut -->
                         <div
                             class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-indigo-500 via-pink-500 to-purple-500 animate-wave">
                         </div>
 
-                        <!-- Contenu -->
                         <div class="p-8 md:p-10">
-                            <!-- Avatar et badge -->
                             <div class="flex flex-col items-center mb-6">
                                 <div class="relative">
                                     <div
                                         class="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-indigo-600 to-pink-600 p-1">
-                                        <img src="https://media.licdn.com/dms/image/v2/D4D03AQHIE7qoqaOsog/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1698388486632?e=1751500800&v=beta&t=CldoQXizZF3-xRdGS7A45tPY_Np6fLaI3AtrKcs4wqQ"
+                                        <img src="/avatar.jpeg" alt="Avatar"
                                             class="w-full h-full rounded-full object-cover border-2 border-gray-800/50">
                                     </div>
                                     <div
@@ -282,10 +303,9 @@ onMounted(() => {
                                 </div>
                             </div>
 
-                            <!-- Statut professionnel -->
                             <div class="text-center mb-8">
                                 <h3 class="text-xl md:text-2xl font-bold mb-2">
-                                    Tahirou Laouan M.
+                                    {{ !!heroCard ? heroCard[0].name : 'Tahirou Laouan M.' }}
                                 </h3>
                                 <div
                                     class="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50 mb-4">
@@ -293,38 +313,43 @@ onMounted(() => {
                                     <span class="text-sm font-medium">En poste chez <span class="text-indigo-400">Shin
                                             Agency SAS</span></span>
                                 </div>
-                                <p class="text-gray-400 max-w-md mx-auto">Développeur Fullstack spécialisé en Vue.js et
-                                    Node.js, créant des expériences digitales innovantes depuis 5 ans.</p>
+                                <p class="text-gray-400 max-w-md mx-auto">
+                                    {{ !!heroCard ? heroCard[0].description : '' }}
+                                </p>
                             </div>
 
-                            <!-- Statistiques -->
                             <div class="grid grid-cols-3 gap-4 mb-8">
                                 <div class="text-center">
-                                    <div class="text-2xl md:text-3xl font-bold text-indigo-400 mb-1">3+</div>
+                                    <div class="text-2xl md:text-3xl font-bold text-indigo-400 mb-1">
+                                        {{ !!heroCard ? heroCard[0].yearsExperience : '3' }}+
+                                    </div>
                                     <div class="text-xs text-gray-400 uppercase tracking-wider">Années XP</div>
                                 </div>
                                 <div class="text-center">
-                                    <div class="text-2xl md:text-3xl font-bold text-pink-400 mb-1">24</div>
+                                    <div class="text-2xl md:text-3xl font-bold text-pink-400 mb-1">
+                                        {{ !!heroCard ? heroCard[0].projectsCompleted : (!!projects ? projects.length : '0') }}
+                                    </div>
                                     <div class="text-xs text-gray-400 uppercase tracking-wider">Projets</div>
                                 </div>
                                 <div class="text-center">
-                                    <div class="text-2xl md:text-3xl font-bold text-purple-400 mb-1">100%</div>
+                                    <div class="text-2xl md:text-3xl font-bold text-purple-400 mb-1">
+                                        {{ !!heroCard ? heroCard[0].clientSatisfaction : '100' }}%
+                                    </div>
                                     <div class="text-xs text-gray-400 uppercase tracking-wider">Satisfaction</div>
                                 </div>
                             </div>
 
-                            <!-- Bouton CV -->
                             <div class="text-center">
                                 <button
                                     class="relative cursor-pointer overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-6 py-3 rounded-lg group transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20">
-                                    <span class="relative z-10 flex items-center justify-center">
+                                    <a href="/tahirou_fr_cv.pdf" download class="relative z-10 flex items-center justify-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
                                         Consulter mon CV
-                                    </span>
+                                    </a>
                                     <span
                                         class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                                 </button>
@@ -353,11 +378,15 @@ onMounted(() => {
                 <div class="flex justify-between items-center mb-8 md:mb-12">
                     <h2 class="text-3xl md:text-4xl font-bold">
                         <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">Selected</span>
-                        Works
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
+                        Projets
+                        </span>
+                        réalisés
                     </h2>
                     <div class="flex items-center">
-                        <span class="text-indigo-400 mr-2 hidden md:block">Explore all</span>
+                        <span class="text-indigo-400 mr-2 hidden md:block">
+                            Tout explorer
+                        </span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -367,30 +396,41 @@ onMounted(() => {
                 </div>
 
                 <div v-if="!selectedProject">
-                    <!-- Enhanced Bento Grid Layout -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Feature Project 1 -->
-                        <div @click="selectProject(projects[0])" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
-                            class="col-span-1 md:col-span-2 row-span-2 bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 hover:bg-gray-700/50 cursor-pointer transition-all transform hover:scale-[1.01] group border border-gray-700/50 hover:border-indigo-500/30 relative overflow-hidden">
+                        <div v-for="(project, index) in projects" :key="index" @click="selectProject(project)"
+                            @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                            :class="[
+                                'bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 hover:bg-gray-700/50 cursor-pointer transition-all transform hover:scale-[1.01] group border border-gray-700/50 relative overflow-hidden',
+                                (index === 0 || index % 4 === 0) ? 'col-span-1 md:col-span-2 row-span-2 hover:border-indigo-500/30' : 'hover:border-gray-700/50'
+                            ]">
+
+                            <!-- Background gradient -->
                             <div
                                 class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             </div>
-                            <div
-                                class="relative h-64 md:h-96 mb-4 overflow-hidden rounded-2xl border border-gray-700/50">
+
+                            <!-- Image block -->
+                            <div :class="[
+                                'relative mb-4 overflow-hidden rounded-2xl border border-gray-700/50',
+                                (index === 0 || index % 4 === 0) ? 'h-64 md:h-96' : 'h-40'
+                            ]">
                                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent z-10">
                                 </div>
-                                <div class="absolute bottom-4 left-4 right-4 z-20">
-                                    <div class="flex items-center justify-between">
-                                        <span
-                                            class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white text-xs px-3 py-1 rounded-full">{{
-                                                projects[0].category }}</span>
-                                        <span class="text-white/80 text-sm">{{ projects[0].date }}</span>
-                                    </div>
-                                    <h3
-                                        class="text-xl md:text-2xl lg:text-3xl font-bold text-white mt-2 group-hover:text-indigo-400 transition-colors">
-                                        {{ projects[0].title }}</h3>
+
+                                <!-- Badge category -->
+                                <div :class="[
+                                    'absolute z-20 flex justify-between items-center',
+                                    (index === 0 || index % 4 === 0) ? 'bottom-4 left-4 right-4' : 'bottom-2 left-2'
+                                ]">
+                                    <span
+                                        class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white text-xs px-3 py-1 rounded-full">
+                                        {{ project.category }}
+                                    </span>
+                                    <span v-if="(index === 0 || index % 4 === 0)" class="text-white/80 text-sm">{{
+                                        project.date }}</span>
                                 </div>
+
+                                <!-- Fixed SVG for all -->
                                 <div
                                     class="w-full h-full bg-gradient-to-br from-indigo-900/30 to-gray-800 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-500/30"
@@ -400,143 +440,30 @@ onMounted(() => {
                                     </svg>
                                 </div>
                             </div>
-                            <p class="text-gray-400 relative z-10">{{ projects[0].shortDesc }}</p>
-                            <div class="mt-4 flex flex-wrap gap-2 relative z-10">
-                                <span v-for="(tech, i) in projects[0].tech" :key="i"
-                                    class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">{{
-                                        tech }}</span>
-                            </div>
-                        </div>
 
-                        <!-- Project 2 -->
-                        <div @click="selectProject(projects[1])" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
-                            class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 hover:bg-gray-700/50 cursor-pointer transition-all transform hover:scale-[1.01] group border border-gray-700/50 hover:border-pink-500/30 relative overflow-hidden">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            </div>
-                            <div class="relative h-40 mb-4 overflow-hidden rounded-2xl border border-gray-700/50">
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent z-10">
-                                </div>
-                                <div class="absolute bottom-2 left-2 z-20">
-                                    <span
-                                        class="bg-gradient-to-r from-pink-600 to-purple-600 text-white text-xs px-3 py-1 rounded-full">{{
-                                            projects[1].category }}</span>
-                                </div>
-                                <div
-                                    class="w-full h-full bg-gradient-to-br from-pink-900/30 to-gray-800 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-pink-500/30"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <h3 class="text-lg font-bold relative z-10 group-hover:text-pink-400 transition-colors">{{
-                                projects[1].title }}</h3>
-                            <p class="text-gray-400 text-sm mt-2 relative z-10">{{ projects[1].shortDesc }}</p>
-                        </div>
+                            <!-- Title -->
+                            <h3 :class="[
+                                'font-bold relative z-10 transition-colors',
+                                (index === 0 || index % 4 === 0) ? 'text-xl md:text-2xl lg:text-3xl group-hover:text-indigo-400' : 'text-lg group-hover:text-pink-400'
+                            ]">
+                                {{ project.title }}
+                            </h3>
 
-                        <!-- Project 3 -->
-                        <div @click="selectProject(projects[2])" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
-                            class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 hover:bg-gray-700/50 cursor-pointer transition-all transform hover:scale-[1.01] group border border-gray-700/50 hover:border-green-500/30 relative overflow-hidden">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-green-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            </div>
-                            <div class="relative h-40 mb-4 overflow-hidden rounded-2xl border border-gray-700/50">
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent z-10">
-                                </div>
-                                <div class="absolute bottom-2 left-2 z-20">
-                                    <span
-                                        class="bg-gradient-to-r from-green-600 to-teal-600 text-white text-xs px-3 py-1 rounded-full">{{
-                                            projects[2].category }}</span>
-                                </div>
-                                <div
-                                    class="w-full h-full bg-gradient-to-br from-green-900/30 to-gray-800 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-500/30"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <h3 class="text-lg font-bold relative z-10 group-hover:text-green-400 transition-colors">{{
-                                projects[2].title }}</h3>
-                            <p class="text-gray-400 text-sm mt-2 relative z-10">{{ projects[2].shortDesc }}</p>
-                        </div>
+                            <!-- Short description -->
+                            <p class="text-gray-400 text-sm mt-2 relative z-10">{{ project.shortDesc }}</p>
 
-                        <!-- Project 4 -->
-                        <div @click="selectProject(projects[3])" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
-                            class="col-span-1 md:col-span-2 bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 hover:bg-gray-700/50 cursor-pointer transition-all transform hover:scale-[1.01] group border border-gray-700/50 hover:border-yellow-500/30 relative overflow-hidden">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <!-- Technologies tags -->
+                            <div v-if="project.tech?.length" class="mt-4 flex flex-wrap gap-2 relative z-10">
+                                <span v-for="(tech, i) in project.tech" :key="i"
+                                    class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">
+                                    {{ tech }}
+                                </span>
                             </div>
-                            <div class="flex flex-col md:flex-row gap-4 relative z-10">
-                                <div
-                                    class="relative h-40 w-full md:w-1/2 overflow-hidden rounded-2xl border border-gray-700/50">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent z-10">
-                                    </div>
-                                    <div class="absolute bottom-2 left-2 z-20">
-                                        <span
-                                            class="bg-gradient-to-r from-yellow-600 to-amber-600 text-white text-xs px-3 py-1 rounded-full">{{
-                                                projects[3].category }}</span>
-                                    </div>
-                                    <div
-                                        class="w-full h-full bg-gradient-to-br from-yellow-900/30 to-gray-800 flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-yellow-500/30"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="md:w-1/2">
-                                    <h3 class="text-lg font-bold group-hover:text-yellow-400 transition-colors">{{
-                                        projects[3].title }}</h3>
-                                    <p class="text-gray-400 text-sm mt-2">{{ projects[3].shortDesc }}</p>
-                                    <div class="mt-4 flex flex-wrap gap-2">
-                                        <span v-for="(tech, i) in projects[3].tech.slice(0, 3)" :key="i"
-                                            class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">{{
-                                                tech }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Project 5 -->
-                        <div @click="selectProject(projects[4])" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
-                            class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 hover:bg-gray-700/50 cursor-pointer transition-all transform hover:scale-[1.01] group border border-gray-700/50 hover:border-blue-500/30 relative overflow-hidden">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            </div>
-                            <div class="relative h-40 mb-4 overflow-hidden rounded-2xl border border-gray-700/50">
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent z-10">
-                                </div>
-                                <div class="absolute bottom-2 left-2 z-20">
-                                    <span
-                                        class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-xs px-3 py-1 rounded-full">{{
-                                            projects[4].category }}</span>
-                                </div>
-                                <div
-                                    class="w-full h-full bg-gradient-to-br from-blue-900/30 to-gray-800 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-500/30"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                            d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <h3 class="text-lg font-bold relative z-10 group-hover:text-blue-400 transition-colors">{{
-                                projects[4].title }}</h3>
-                            <p class="text-gray-400 text-sm mt-2 relative z-10">{{ projects[4].shortDesc }}</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project Detail View -->
                 <div v-else
                     class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 transition-all border border-gray-700/50">
                     <div class="flex justify-between items-center mb-6">
@@ -567,8 +494,9 @@ onMounted(() => {
 
                             <div class="flex flex-wrap gap-2 mb-6">
                                 <span v-for="(tech, i) in selectedProject.tech" :key="i"
-                                    class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">{{
-                                        tech }}</span>
+                                    class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">
+                                    {{ tech }}
+                                </span>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4 mb-6">
@@ -648,14 +576,17 @@ onMounted(() => {
                             <div class="bg-gray-700/50 p-4 rounded-xl mb-6 border border-gray-600/50">
                                 <h4 class="font-bold">Challenges</h4>
                                 <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
-                                    <li v-for="(challenge, i) in selectedProject.challenges" :key="i">{{ challenge }}
+                                    <li v-for="(challenge, i) in selectedProject.challenges" :key="i">
+                                        {{ challenge.content }}
                                     </li>
                                 </ul>
                             </div>
                             <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600/50">
                                 <h4 class="font-bold">Solutions</h4>
                                 <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
-                                    <li v-for="(solution, i) in selectedProject.solutions" :key="i">{{ solution }}</li>
+                                    <li v-for="(solution, i) in selectedProject.solutions" :key="i">
+                                        {{ solution.content }}
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -665,154 +596,106 @@ onMounted(() => {
         </section>
 
         <!-- About & Contact -->
-        <section id="about" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 relative z-10 h-full">
-            <div class="grid md:gap-0 gap-6">
-                <div class="animate-on-scroll min-h-full h-full">
-                <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-4">
-                        <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">Professional</span>
-                        Journey
-                    </h2>
-                    <p class="text-gray-400 mb-4">
-                        I'm a visionary developer with 5+ years of experience creating cutting-edge digital solutions.
-                        My expertise spans the entire development lifecycle, from conceptualization to deployment, with
-                        a strong focus on creating intuitive user experiences.
-                    </p>
-                    <p class="text-gray-400 mb-6">
-                        My approach combines technical excellence with creative problem-solving, ensuring that every
-                        project not only meets but exceeds expectations. I thrive on transforming complex challenges
-                        into elegant, scalable solutions.
-                    </p>
+        <section id="about" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch mb-16 relative z-10 h-full">
+            <div class="grid lg:gap-0 gap-6 h-full">
+                <div class="animate-on-scroll h-full">
+                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-4">
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">Parcours</span>
+                            Professionnel
+                        </h2>
+                        <p v-if="abouts && abouts.length > 0" v-html="abouts[0].content" class="text-gray-400 mb-4">
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="animate-on-scroll min-h-full h-full">
-                <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-4">
-                        <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">Compétences</span>
-                            & Outils
-                    </h2>
-                    <div>
-                        <ul class="grid md:grid-cols-5 gap-2 min-h-full h-full overflow-scroll">
-                            <li class="flex items-start p-3 rounded border border-gray-700/50 bg-gray-700/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400 mt-0.5 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>
-                                    JavaScript
-                                </span>
-                            </li>
-                            <li class="flex items-start p-3 rounded border border-gray-700/50 bg-gray-700/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400 mt-0.5 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>
-                                    Vue.js
-                                </span>
-                            </li>
-                            <li class="flex items-start p-3 rounded border border-gray-700/50 bg-gray-700/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400 mt-0.5 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>
-                                    React.js / React Native
-                                </span>
-                            </li>
-                            <li class="flex items-start p-3 rounded border border-gray-700/50 bg-gray-700/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400 mt-0.5 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>
-                                    Node.js / Express.js
-                                </span>
-                            </li>
-                            <li class="flex items-start p-3 rounded border border-gray-700/50 bg-gray-700/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400 mt-0.5 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>
-                                    PHP
-                                </span>
-                            </li>
-                            <li v-for="n in 10"
-                                class="flex items-start p-3 rounded border border-gray-700/50 bg-gray-700/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400 mt-0.5 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>
-                                    Laravel / Symfony
-                                </span>
-                            </li>
-                        </ul>
+                <div class="animate-on-scroll h-full">
+                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50 h-full">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-4">
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
+                                Compétences
+                            </span> & Outils
+                        </h2>
+                        <!-- add search bar -->
+                        <div class="mb-4">
+                            <input @input="filterSkills" type="text" placeholder="Rechercher une compétence"
+                                class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <span class="text-gray-500 text-xs">
+                                Tapez ci-dessus pour rechercher une compétence ou un outil
+                            </span>
+                        </div>
+                        <div>
+                            <ul v-if="filteredSkills && filteredSkills.length > 0" class="flex flex-wrap items-center justify-around gap-2">
+                                <li v-for="skill in filteredSkills" class="block w-max p-2 rounded-full border border-gray-700/50 bg-gray-700/50">
+                                    <span>
+                                        {{ skill }}
+                                    </span>
+                                </li>
+                            </ul>
+
+                            <p v-else>
+                                <span class="text-gray-400">Aucune compétence spécifiée.</span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
 
-            <div id="contact" class="animate-on-scroll min-h-full h-full">
-                <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
+            <div id="contact" class="animate-on-scroll h-full">
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl h-full p-6 border border-gray-700/50">
                     <h2 class="text-2xl md:text-3xl font-bold mb-4">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-indigo-500">Let's
-                            Build</span> Something Amazing
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-indigo-500">
+                            Entrons
+                        </span> en contact
                     </h2>
                     <p class="text-gray-400 mb-6">
-                        Have a project in mind or want to discuss potential opportunities? I'm currently available for
-                        freelance work and interesting collaborations.
+                        Vous avez un projet en tête ou souhaitez discuter d'opportunités potentielles ?
+                        N'hésitez pas à me contacter !
                     </p>
 
                     <form class="space-y-4 mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="name" class="block text-sm font-medium text-gray-400 mb-1">Name</label>
+                                <label for="name" class="block text-sm font-medium text-gray-400 mb-1">Nom</label>
                                 <input type="text" id="name"
                                     class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="Your name">
+                                    placeholder="Votre nom">
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-400 mb-1">Email</label>
                                 <input type="email" id="email"
                                     class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="Your email">
+                                    placeholder="Votre email">
                             </div>
                         </div>
                         <div>
-                            <label for="subject" class="block text-sm font-medium text-gray-400 mb-1">Subject</label>
+                            <label for="subject" class="block text-sm font-medium text-gray-400 mb-1">Sujet</label>
                             <input type="text" id="subject"
                                 class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                placeholder="Subject">
+                                placeholder="Sujet">
                         </div>
                         <div>
                             <label for="message" class="block text-sm font-medium text-gray-400 mb-1">Message</label>
                             <textarea id="message" rows="4"
                                 class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                placeholder="Tell me about your project"></textarea>
+                                placeholder="Dites-moi tout..."></textarea>
                         </div>
                         <button type="submit" @mouseenter="isHoveringInteractive = true"
                             @mouseleave="isHoveringInteractive = false"
                             class="w-full relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white py-3 rounded-lg transition-all group hover:shadow-lg hover:shadow-indigo-500/20">
-                            <span class="relative z-10">Send Message</span>
+                            <span class="relative z-10">
+                                Envoyer
+                            </span>
                             <span
                                 class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                         </button>
                     </form>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <a href="#" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
+                        <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].github : '#'" @mouseenter="isHoveringInteractive = true"
+                            @mouseleave="isHoveringInteractive = false" target="_blank"
                             class="flex items-center justify-center bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="currentColor"
                                 viewBox="0 0 24 24">
@@ -821,8 +704,8 @@ onMounted(() => {
                             </svg>
                             <span>GitHub</span>
                         </a>
-                        <a href="#" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
+                        <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].linkedin : '#'" @mouseenter="isHoveringInteractive = true"
+                            @mouseleave="isHoveringInteractive = false" target="_blank"
                             class="flex items-center justify-center bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="currentColor"
                                 viewBox="0 0 24 24">
@@ -831,7 +714,7 @@ onMounted(() => {
                             </svg>
                             <span>LinkedIn</span>
                         </a>
-                        <a href="#" @mouseenter="isHoveringInteractive = true"
+                        <a :href="contactInfos && contactInfos?.length > 0 ? 'mailto:' + contactInfos[0].email : '#'" @mouseenter="isHoveringInteractive = true"
                             @mouseleave="isHoveringInteractive = false"
                             class="flex items-center justify-center col-span-2 bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
