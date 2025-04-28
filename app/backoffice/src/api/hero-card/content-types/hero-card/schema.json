@@ -31,5 +31,6 @@
     "clientSatisfaction": {
       "type": "integer"
     }
-  }
+  },
+  "kind": "collectionType"
 }

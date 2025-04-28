@@ -12,5 +12,6 @@
     "name": {
       "type": "string"
     }
-  }
+  },
+  "kind": "collectionType"
 }
