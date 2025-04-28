@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, reactive } from 'vue';
 
 const selectedProject = ref(null);
 const isMenuOpen = ref(false);
@@ -14,7 +14,7 @@ const filteredSkills = ref([]);
 const currentStatus = ref(null);
 const contactInfos = ref(null);
 const heroCard = ref(null);
-const contactForm = ref({
+const contactForm = reactive({
     name: '',
     email: '',
     subject: '',
@@ -127,14 +127,16 @@ const sendEmail = async (e) => {
       body: JSON.stringify({
         to: API_EMAIL_RECEIVER,
         from: contactForm.email,
-        subject: 'Nouveau message de contact: ' + contactForm.subject,
+        subject: 'techTahirou - Nouveau message de contact',
         text: `
+            Nouveau message de contact
             Name: ${contactForm.name}
             Email: ${contactForm.email}
             Subject: ${contactForm.subject}
             Message: ${contactForm.message}
         `,
         html: `
+            <h1>Nouveau message de contact</h1>
             <p><strong>Name:</strong> ${contactForm.name}</p>
             <p><strong>Email:</strong> ${contactForm.email}</p>
             <p><strong>Subject:</strong> ${contactForm.subject}</p>
@@ -541,11 +543,13 @@ onMounted(() => {
                             <div class="rounded-2xl overflow-hidden mb-6 border border-gray-700/50">
                                 <div
                                     class="w-full h-64 md:h-80 bg-gradient-to-br from-indigo-900/30 to-gray-800 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-500/30"
+                                    <svg v-if="!project.image" xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-500/30"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
+                                    <img v-else :src="selectedProject.image" alt="Project Image"
+                                        class="w-full h-full object-cover rounded-2xl">
                                 </div>
                             </div>
 
