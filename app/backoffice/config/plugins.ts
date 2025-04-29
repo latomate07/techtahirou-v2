@@ -11,6 +11,10 @@ module.exports = ({ env }) => ({
                 },
                 secure: false, // true for 465, false for other ports
             },
+            settings: {
+                defaultFrom: env('EMAIL_DEFAULT_FROM', 'noreply@clutchy.com'),
+                defaultReplyTo: env('EMAIL_DEFAULT_REPLY_TO', 'noreply@clutchy.com'),
+            },
         },
     },
 });
