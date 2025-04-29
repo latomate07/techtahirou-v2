@@ -562,7 +562,7 @@ onMounted(() => {
                             <div class="flex flex-wrap gap-2 mb-6">
                                 <span v-for="(tech, i) in selectedProject.tech" :key="i"
                                     class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">
-                                    {{ tech }}
+                                    {{ tech.content }}
                                 </span>
                             </div>
 
