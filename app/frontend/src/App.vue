@@ -388,7 +388,7 @@ onMounted(() => {
                                 <div class="text-center">
                                     <div class="text-2xl md:text-3xl font-bold text-pink-400 mb-1">
                                         {{ !!heroCard ? heroCard[0].projectsCompleted : (!!projects ? projects.length :
-                                        '0') }}
+                                            '0') }}
                                     </div>
                                     <div class="text-xs text-gray-400 uppercase tracking-wider">Projets</div>
                                 </div>
@@ -586,21 +586,28 @@ onMounted(() => {
                             </div>
 
                             <div class="flex flex-wrap gap-4">
-                                <a :href="selectedProject.liveLink" target="_blank"
-                                    @mouseenter="isHoveringInteractive = true"
-                                    @mouseleave="isHoveringInteractive = false"
-                                    class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-6 py-3 rounded-lg transition-all group hover:shadow-lg hover:shadow-indigo-500/20">
-                                    <span class="relative z-10 flex items-center">
-                                        Voir en LIVE
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                        </svg>
+                                <div class="flex flex-col">
+                                    <a :href="selectedProject.liveLink" target="_blank"
+                                        @mouseenter="isHoveringInteractive = true"
+                                        @mouseleave="isHoveringInteractive = false"
+                                        class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-6 py-3 rounded-lg transition-all group hover:shadow-lg hover:shadow-indigo-500/20">
+                                        <span class="relative z-10 flex items-center">
+                                            Voir en LIVE
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                        </span>
+                                        <span
+                                            class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                    </a>
+                                    <span v-if="!selectedProject.liveLink" class="text-xs mt-1">
+                                        <span class="text-gray-400">
+                                            Lien inaccessible.
+                                        </span>
                                     </span>
-                                    <span
-                                        class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                                </a>
+                                </div>
                                 <div class="flex flex-col">
                                     <a :href="selectedProject.repoLink" target="_blank"
                                         @mouseenter="isHoveringInteractive = true"
