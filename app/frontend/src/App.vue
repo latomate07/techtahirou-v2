@@ -111,31 +111,31 @@ const filterSkills = (e) => {
 
 // Send email
 const sendEmail = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const API_URL = import.meta.env.VITE_API_URL;
-  const API_TOKEN = import.meta.env.VITE_API_TOKEN;
-  const API_EMAIL_RECEIVER = import.meta.env.VITE_API_EMAIL_RECEIVER;
+    const API_URL = import.meta.env.VITE_API_URL;
+    const API_TOKEN = import.meta.env.VITE_API_TOKEN;
+    const API_EMAIL_RECEIVER = import.meta.env.VITE_API_EMAIL_RECEIVER;
 
-  try {
-    const response = await fetch(`${API_URL}/api/email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${API_TOKEN}`,
-      },
-      body: JSON.stringify({
-        to: API_EMAIL_RECEIVER,
-        from: contactForm.email,
-        subject: 'techTahirou - Nouveau message de contact',
-        text: `
+    try {
+        const response = await fetch(`${API_URL}/api/email`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${API_TOKEN}`,
+            },
+            body: JSON.stringify({
+                to: API_EMAIL_RECEIVER,
+                from: contactForm.email,
+                subject: 'techTahirou - Nouveau message de contact',
+                text: `
             Nouveau message de contact
             Name: ${contactForm.name}
             Email: ${contactForm.email}
             Subject: ${contactForm.subject}
             Message: ${contactForm.message}
         `,
-        html: `
+                html: `
             <h1>Nouveau message de contact</h1>
             <p><strong>Name:</strong> ${contactForm.name}</p>
             <p><strong>Email:</strong> ${contactForm.email}</p>
@@ -143,20 +143,20 @@ const sendEmail = async (e) => {
             <p><strong>Message:</strong></p>
             <p>${contactForm.message}</p>
         `,
-      }),
-    });
+            }),
+        });
 
-    if (!response.ok) {
-      throw new Error('Failed to send email');
+        if (!response.ok) {
+            throw new Error('Failed to send email');
+        }
+
+        const result = await response.json();
+        console.log('Email sent successfully:', result);
+        return result;
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw error;
     }
-
-    const result = await response.json();
-    console.log('Email sent successfully:', result);
-    return result;
-  } catch (error) {
-    console.error('Error sending email:', error);
-    throw error;
-  }
 };
 
 
@@ -264,7 +264,8 @@ onMounted(() => {
                 <a @click="isMenuOpen = false" href="#" class="hover:text-indigo-400 transition-colors">Accueil</a>
                 <a @click="isMenuOpen = false" href="#projects"
                     class="hover:text-indigo-400 transition-colors">Projets</a>
-                <a @click="isMenuOpen = false" href="#about" class="hover:text-indigo-400 transition-colors">À propos</a>
+                <a @click="isMenuOpen = false" href="#about" class="hover:text-indigo-400 transition-colors">À
+                    propos</a>
                 <a @click="isMenuOpen = false" href="#contact"
                     class="hover:text-indigo-400 transition-colors">Contact</a>
             </div>
@@ -285,7 +286,8 @@ onMounted(() => {
                         Je transforme des défis complexes en solutions intuitives.
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <a href="#projects" @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                        <a href="#projects" @mouseenter="isHoveringInteractive = true"
+                            @mouseleave="isHoveringInteractive = false"
                             class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-8 py-4 rounded-xl transition-all group hover:shadow-xl hover:shadow-indigo-500/20">
                             <span class="relative z-10 flex items-center">
                                 Explorer mes projets
@@ -298,7 +300,8 @@ onMounted(() => {
                             <span
                                 class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                         </a>
-                        <a href="#contact" @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                        <a href="#contact" @mouseenter="isHoveringInteractive = true"
+                            @mouseleave="isHoveringInteractive = false"
                             class="relative overflow-hidden border-2 border-indigo-600 text-indigo-400 px-8 py-4 rounded-xl transition-all group hover:bg-indigo-600 hover:text-white">
                             <span class="relative z-10 flex items-center">
                                 Contactez-moi
@@ -384,7 +387,8 @@ onMounted(() => {
                                 </div>
                                 <div class="text-center">
                                     <div class="text-2xl md:text-3xl font-bold text-pink-400 mb-1">
-                                        {{ !!heroCard ? heroCard[0].projectsCompleted : (!!projects ? projects.length : '0') }}
+                                        {{ !!heroCard ? heroCard[0].projectsCompleted : (!!projects ? projects.length :
+                                        '0') }}
                                     </div>
                                     <div class="text-xs text-gray-400 uppercase tracking-wider">Projets</div>
                                 </div>
@@ -399,7 +403,8 @@ onMounted(() => {
                             <div class="text-center">
                                 <button
                                     class="relative cursor-pointer overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-6 py-3 rounded-lg group transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20">
-                                    <a href="/tahirou_fr_cv.pdf" download class="relative z-10 flex items-center justify-center">
+                                    <a href="/tahirou_fr_cv.pdf" download
+                                        class="relative z-10 flex items-center justify-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -434,9 +439,8 @@ onMounted(() => {
             <div class="animate-on-scroll">
                 <div class="flex justify-between items-center mb-8 md:mb-12">
                     <h2 class="text-3xl md:text-4xl font-bold">
-                        <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
-                        Projets
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
+                            Projets
                         </span>
                         réalisés
                     </h2>
@@ -490,8 +494,9 @@ onMounted(() => {
                                 <!-- Fixed SVG for all -->
                                 <div
                                     class="w-full h-full bg-gradient-to-br from-indigo-900/30 to-gray-800 flex items-center justify-center">
-                                    <svg v-if="!project.image" xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-500/30"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg v-if="!project.image" xmlns="http://www.w3.org/2000/svg"
+                                        class="h-16 w-16 text-indigo-500/30" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
@@ -515,7 +520,7 @@ onMounted(() => {
                             <div v-if="project.tech?.length" class="mt-4 flex flex-wrap gap-2 relative z-10">
                                 <span v-for="(tech, i) in project.tech" :key="i"
                                     class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">
-                                    {{ tech }}
+                                    {{ tech.content }}
                                 </span>
                             </div>
 
@@ -543,8 +548,9 @@ onMounted(() => {
                             <div class="rounded-2xl overflow-hidden mb-6 border border-gray-700/50">
                                 <div
                                     class="w-full h-64 md:h-80 bg-gradient-to-br from-indigo-900/30 to-gray-800 flex items-center justify-center">
-                                    <svg v-if="!selectedProject.image" xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-500/30"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg v-if="!selectedProject.image" xmlns="http://www.w3.org/2000/svg"
+                                        class="h-16 w-16 text-indigo-500/30" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
@@ -562,7 +568,7 @@ onMounted(() => {
 
                             <div class="grid grid-cols-2 gap-4 mb-6">
                                 <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600/50">
-                                    <h4 class="text-gray-400 text-sm">Category</h4>
+                                    <h4 class="text-gray-400 text-sm">Categorie</h4>
                                     <p>{{ selectedProject.category }}</p>
                                 </div>
                                 <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600/50">
@@ -585,7 +591,7 @@ onMounted(() => {
                                     @mouseleave="isHoveringInteractive = false"
                                     class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-6 py-3 rounded-lg transition-all group hover:shadow-lg hover:shadow-indigo-500/20">
                                     <span class="relative z-10 flex items-center">
-                                        Live Preview
+                                        Voir en LIVE
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -595,29 +601,36 @@ onMounted(() => {
                                     <span
                                         class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                                 </a>
-                                <a :href="selectedProject.repoLink" target="_blank"
-                                    @mouseenter="isHoveringInteractive = true"
-                                    @mouseleave="isHoveringInteractive = false"
-                                    class="relative overflow-hidden border border-indigo-600 text-indigo-400 px-6 py-3 rounded-lg transition-all group hover:bg-indigo-600 hover:text-white">
-                                    <span class="relative z-10 flex items-center">
-                                        View Code
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                        </svg>
+                                <div class="flex flex-col">
+                                    <a :href="selectedProject.repoLink" target="_blank"
+                                        @mouseenter="isHoveringInteractive = true"
+                                        @mouseleave="isHoveringInteractive = false"
+                                        class="relative overflow-hidden border border-indigo-600 text-indigo-400 px-6 py-3 rounded-lg transition-all group hover:bg-indigo-600 hover:text-white">
+                                        <span class="relative z-10 flex items-center">
+                                            Voir le code
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                            </svg>
+                                        </span>
+                                        <span
+                                            class="absolute inset-0 bg-indigo-600 opacity-0 group-hover:opacity-10 transition-opacity"></span>
+                                    </a>
+                                    <span v-if="!selectedProject.repoLink" class="text-xs mt-1">
+                                        <span class="text-gray-400">
+                                            Lien inaccessible.
+                                        </span>
                                     </span>
-                                    <span
-                                        class="absolute inset-0 bg-indigo-600 opacity-0 group-hover:opacity-10 transition-opacity"></span>
-                                </a>
+                                </div>
                             </div>
                         </div>
 
                         <div>
-                            <h3 class="text-xl font-bold mb-4">Project Overview</h3>
+                            <h3 class="text-xl font-bold mb-4">Présentation du projet</h3>
                             <p class="text-gray-400 mb-6">{{ selectedProject.description }}</p>
 
-                            <h3 class="text-xl font-bold mb-4">Development Process</h3>
+                            <h3 class="text-xl font-bold mb-4">Processus de développement</h3>
                             <div class="space-y-4">
                                 <div v-for="(step, i) in selectedProject.process" :key="i" class="flex">
                                     <div class="mr-4 flex-shrink-0">
@@ -633,9 +646,9 @@ onMounted(() => {
                                 </div>
                             </div>
 
-                            <h3 class="text-xl font-bold mt-6 mb-4">Challenges & Solutions</h3>
+                            <h3 class="text-xl font-bold mt-6 mb-4">Défis et solutions</h3>
                             <div class="bg-gray-700/50 p-4 rounded-xl mb-6 border border-gray-600/50">
-                                <h4 class="font-bold">Challenges</h4>
+                                <h4 class="font-bold">Défis</h4>
                                 <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
                                     <li v-for="(challenge, i) in selectedProject.challenges" :key="i">
                                         {{ challenge.content }}
@@ -674,8 +687,7 @@ onMounted(() => {
                 <div class="animate-on-scroll h-full">
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50 h-full">
                         <h2 class="text-2xl md:text-3xl font-bold mb-4">
-                            <span
-                                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
                                 Compétences
                             </span> & Outils
                         </h2>
@@ -688,8 +700,10 @@ onMounted(() => {
                             </span>
                         </div>
                         <div>
-                            <ul v-if="filteredSkills && filteredSkills.length > 0" class="flex flex-wrap items-center justify-around gap-2">
-                                <li v-for="skill in filteredSkills" class="block w-max p-2 rounded-full border border-gray-700/50 bg-gray-700/50">
+                            <ul v-if="filteredSkills && filteredSkills.length > 0"
+                                class="flex flex-wrap items-center justify-around gap-2">
+                                <li v-for="skill in filteredSkills"
+                                    class="block w-max p-2 rounded-full border border-gray-700/50 bg-gray-700/50">
                                     <span>
                                         {{ skill }}
                                     </span>
@@ -755,8 +769,9 @@ onMounted(() => {
                     </form>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].github : '#'" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false" target="_blank"
+                        <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].github : '#'"
+                            @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                            target="_blank"
                             class="flex items-center justify-center bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="currentColor"
                                 viewBox="0 0 24 24">
@@ -765,8 +780,9 @@ onMounted(() => {
                             </svg>
                             <span>GitHub</span>
                         </a>
-                        <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].linkedin : '#'" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false" target="_blank"
+                        <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].linkedin : '#'"
+                            @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                            target="_blank"
                             class="flex items-center justify-center bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="currentColor"
                                 viewBox="0 0 24 24">
@@ -775,8 +791,8 @@ onMounted(() => {
                             </svg>
                             <span>LinkedIn</span>
                         </a>
-                        <a :href="contactInfos && contactInfos?.length > 0 ? 'mailto:' + contactInfos[0].email : '#'" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
+                        <a :href="contactInfos && contactInfos?.length > 0 ? 'mailto:' + contactInfos[0].email : '#'"
+                            @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
                             class="flex items-center justify-center col-span-2 bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
