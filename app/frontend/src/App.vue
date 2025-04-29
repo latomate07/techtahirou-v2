@@ -20,6 +20,15 @@ const contactForm = reactive({
     subject: '',
     message: ''
 });
+const errors = reactive({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+});
+const successMessage = ref('');
+const errorMessage = ref('');
+
 
 // Fetch all collections from Strapi
 const fetchCollections = async () => {
@@ -112,6 +121,10 @@ const filterSkills = (e) => {
 // Send email
 const sendEmail = async (e) => {
     e.preventDefault();
+    successMessage.value = '';
+    errorMessage.value = '';
+
+    if (!validateForm()) return;
 
     const API_URL = import.meta.env.VITE_API_URL;
     const API_TOKEN = import.meta.env.VITE_API_TOKEN;
@@ -128,37 +141,43 @@ const sendEmail = async (e) => {
                 to: API_EMAIL_RECEIVER,
                 from: contactForm.email,
                 subject: 'techTahirou - Nouveau message de contact',
-                text: `
-            Nouveau message de contact
-            Name: ${contactForm.name}
-            Email: ${contactForm.email}
-            Subject: ${contactForm.subject}
-            Message: ${contactForm.message}
-        `,
+                text: `Name: ${contactForm.name}\nEmail: ${contactForm.email}\nSubject: ${contactForm.subject}\nMessage: ${contactForm.message}`,
                 html: `
-            <h1>Nouveau message de contact</h1>
-            <p><strong>Name:</strong> ${contactForm.name}</p>
-            <p><strong>Email:</strong> ${contactForm.email}</p>
-            <p><strong>Subject:</strong> ${contactForm.subject}</p>
-            <p><strong>Message:</strong></p>
-            <p>${contactForm.message}</p>
-        `,
+                    <h1>Nouveau message de contact</h1>
+                    <p><strong>Name:</strong> ${contactForm.name}</p>
+                    <p><strong>Email:</strong> ${contactForm.email}</p>
+                    <p><strong>Subject:</strong> ${contactForm.subject}</p>
+                    <p>${contactForm.message}</p>
+                `,
             }),
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to send email');
-        }
+        if (!response.ok) throw new Error('Échec de l’envoi du message.');
 
-        const result = await response.json();
-        console.log('Email sent successfully:', result);
-        return result;
+        successMessage.value = 'Votre message a été envoyé avec succès !';
+        contactForm.name = '';
+        contactForm.email = '';
+        contactForm.subject = '';
+        contactForm.message = '';
     } catch (error) {
-        console.error('Error sending email:', error);
-        throw error;
+        console.error('Erreur:', error);
+        errorMessage.value = "Une erreur s'est produite. Veuillez réessayer plus tard.";
     }
 };
 
+// Validate form inputs
+const validateForm = () => {
+    let isValid = true;
+    errors.name = contactForm.name.trim() ? '' : 'Le nom est requis.';
+    errors.email = /^\S+@\S+\.\S+$/.test(contactForm.email) ? '' : 'Email invalide.';
+    errors.subject = contactForm.subject.trim() ? '' : 'Le sujet est requis.';
+    errors.message = contactForm.message.trim() ? '' : 'Le message est requis.';
+
+    for (let key in errors) {
+        if (errors[key]) isValid = false;
+    }
+    return isValid;
+};
 
 watch(
     () => skills.value,
@@ -602,7 +621,8 @@ onMounted(() => {
                                         <span
                                             class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                                     </a>
-                                    <span v-if="!selectedProject.liveLink || selectedProject.liveLink == null" class="text-xs mt-1">
+                                    <span v-if="!selectedProject.liveLink || selectedProject.liveLink == null"
+                                        class="text-xs mt-1">
                                         <span class="text-gray-400">
                                             Lien inaccessible.
                                         </span>
@@ -624,7 +644,8 @@ onMounted(() => {
                                         <span
                                             class="absolute inset-0 bg-indigo-600 opacity-0 group-hover:opacity-10 transition-opacity"></span>
                                     </a>
-                                    <span v-if="!selectedProject.repoLink || selectedProject.repoLink == null" class="text-xs mt-1">
+                                    <span v-if="!selectedProject.repoLink || selectedProject.repoLink == null"
+                                        class="text-xs mt-1">
                                         <span class="text-gray-400">
                                             Lien inaccessible.
                                         </span>
@@ -744,12 +765,14 @@ onMounted(() => {
                                 <input type="text" id="name" v-model="contactForm.name"
                                     class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                     placeholder="Votre nom">
+                                <p v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</p>
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-400 mb-1">Email</label>
                                 <input type="email" id="email" v-model="contactForm.email"
                                     class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                     placeholder="Votre email">
+                                <p v-if="errors.email" class="text-red-500 text-sm">{{ errors.email }}</p>
                             </div>
                         </div>
                         <div>
@@ -757,12 +780,14 @@ onMounted(() => {
                             <input type="text" id="subject" v-model="contactForm.subject"
                                 class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 placeholder="Sujet">
+                            <p v-if="errors.subject" class="text-red-500 text-sm">{{ errors.subject }}</p>
                         </div>
                         <div>
                             <label for="message" class="block text-sm font-medium text-gray-400 mb-1">Message</label>
                             <textarea id="message" rows="4" v-model="contactForm.message"
                                 class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 placeholder="Dites-moi tout..."></textarea>
+                            <p v-if="errors.message" class="text-red-500 text-sm">{{ errors.message }}</p>
                         </div>
                         <button type="submit" @mouseenter="isHoveringInteractive = true"
                             @mouseleave="isHoveringInteractive = false"
@@ -773,6 +798,9 @@ onMounted(() => {
                             <span
                                 class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                         </button>
+                        <p v-if="successMessage" class="text-green-500 text-sm text-center mt-2">{{ successMessage }}
+                        </p>
+                        <p v-if="errorMessage" class="text-red-500 text-sm text-center mt-2">{{ errorMessage }}</p>
                     </form>
 
                     <div class="grid grid-cols-2 gap-4">
