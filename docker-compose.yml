@@ -65,9 +65,13 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./config/nginx.conf.template:/etc/nginx/nginx.conf.template
-    entrypoint: /bin/sh -c "envsubst '$$DOMAIN_FRONT $$DOMAIN_BACKOFFICE $$DOMAIN_PHPMYADMIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'"
+      - ./config/nginx.conf.ssl.template:/etc/nginx/nginx.conf.ssl.template
+      - ./config/start-nginx.sh:/start-nginx.sh
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    entrypoint: /start-nginx.sh
     depends_on:
       - frontend
       - backoffice
@@ -76,6 +80,7 @@ services:
       - DOMAIN_FRONT=${DOMAIN_FRONT}
       - DOMAIN_BACKOFFICE=${DOMAIN_BACKOFFICE}
       - DOMAIN_PHPMYADMIN=${DOMAIN_PHPMYADMIN}
+      - ENABLE_SSL=${ENABLE_SSL}
     networks:
       - app-network
 

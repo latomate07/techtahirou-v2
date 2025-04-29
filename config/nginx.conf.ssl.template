@@ -1,0 +1,62 @@
+events {}
+
+http {
+  server {
+    listen 80;
+    server_name ${DOMAIN_FRONT} ${DOMAIN_BACKOFFICE} ${DOMAIN_PHPMYADMIN};
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$host$request_uri;
+  }
+
+  server {
+    listen 443 ssl;
+    server_name ${DOMAIN_FRONT};
+
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN_FRONT}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_FRONT}/privkey.pem;
+
+    location / {
+      proxy_pass http://frontend:80;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+      proxy_set_header Host $host;
+      proxy_cache_bypass $http_upgrade;
+    }
+  }
+
+  server {
+    listen 443 ssl;
+    server_name ${DOMAIN_BACKOFFICE};
+
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN_FRONT}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_FRONT}/privkey.pem;
+
+    location / {
+      proxy_pass http://backoffice:1337;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+      proxy_set_header Host $host;
+      proxy_cache_bypass $http_upgrade;
+    }
+  }
+
+  server {
+    listen 443 ssl;
+    server_name ${DOMAIN_PHPMYADMIN};
+
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN_FRONT}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_FRONT}/privkey.pem;
+
+    location / {
+      proxy_pass http://phpmyadmin:80;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+      proxy_set_header Host $host;
+      proxy_cache_bypass $http_upgrade;
+    }
+  }
+}
