@@ -28,7 +28,7 @@ const errors = reactive({
 });
 const successMessage = ref('');
 const errorMessage = ref('');
-
+const isSubmitting = ref(false);
 
 // Fetch all collections from Strapi
 const fetchCollections = async () => {
@@ -131,6 +131,7 @@ const sendEmail = async (e) => {
     const API_EMAIL_RECEIVER = import.meta.env.VITE_API_EMAIL_RECEIVER;
 
     try {
+        isSubmitting.value = true;
         const response = await fetch(`${API_URL}/api/email`, {
             method: 'POST',
             headers: {
@@ -159,9 +160,14 @@ const sendEmail = async (e) => {
         contactForm.email = '';
         contactForm.subject = '';
         contactForm.message = '';
+        setTimeout(() => {
+            successMessage.value = '';
+        }, 5000);
+        isSubmitting.value = false;
     } catch (error) {
         console.error('Erreur:', error);
         errorMessage.value = "Une erreur s'est produite. Veuillez réessayer plus tard.";
+        isSubmitting.value = false;
     }
 };
 
@@ -801,6 +807,7 @@ onMounted(() => {
                         <p v-if="successMessage" class="text-green-500 text-sm text-center mt-2">{{ successMessage }}
                         </p>
                         <p v-if="errorMessage" class="text-red-500 text-sm text-center mt-2">{{ errorMessage }}</p>
+                        <p v-if="isSubmitting" class="text-gray-400 text-sm text-center mt-2">Envoi en cours...</p>
                     </form>
 
                     <div class="grid grid-cols-2 gap-4">
