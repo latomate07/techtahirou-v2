@@ -243,8 +243,8 @@ onMounted(() => {
         </div>
 
         <!-- Navbar -->
-        <nav class="flex justify-between items-center mb-8 md:mb-16 relative z-10">
-            <div class="text-2xl font-bold">
+        <nav class="flex justify-between items-center mb-8 md:mb-16">
+            <div class="md:text-2xl text-md font-bold">
                 <span class="text-indigo-400">tech</span>Tahirou
             </div>
             <div class="hidden md:flex space-x-8">
@@ -277,27 +277,29 @@ onMounted(() => {
             </button>
 
             <!-- Mobile menu -->
-            <div v-if="isMenuOpen"
-                class="fixed inset-0 bg-gray-900/95 backdrop-blur-md z-40 flex flex-col items-center justify-center space-y-8 text-2xl">
-                <button @click="isMenuOpen = false" class="absolute top-8 right-8">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-                <a @click="isMenuOpen = false" href="#" class="hover:text-indigo-400 transition-colors">Accueil</a>
-                <a @click="isMenuOpen = false" href="#projects"
-                    class="hover:text-indigo-400 transition-colors">Projets</a>
-                <a @click="isMenuOpen = false" href="#about" class="hover:text-indigo-400 transition-colors">À
-                    propos</a>
-                <a @click="isMenuOpen = false" href="#contact"
-                    class="hover:text-indigo-400 transition-colors">Contact</a>
-            </div>
+            <Transition name="fade" mode="out-in" duration="300">
+                <div v-if="isMenuOpen"
+                    class="fixed inset-0 bg-gray-900/95 backdrop-blur-md z-[99] flex flex-col items-center justify-center space-y-8 text-2xl">
+                    <button @click="isMenuOpen = false" class="absolute top-4 right-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <a @click="isMenuOpen = false" href="#" class="hover:text-indigo-400 transition-colors">Accueil</a>
+                    <a @click="isMenuOpen = false" href="#projects"
+                        class="hover:text-indigo-400 transition-colors">Projets</a>
+                    <a @click="isMenuOpen = false" href="#about" class="hover:text-indigo-400 transition-colors">À
+                        propos</a>
+                    <a @click="isMenuOpen = false" href="#contact"
+                        class="hover:text-indigo-400 transition-colors">Contact</a>
+                </div>
+            </Transition>
         </nav>
 
         <!-- Hero Section -->
-        <section class="mb-16 md:mb-24 relative z-10">
+        <section class="mb-16 md:mb-24">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center animate-on-scroll">
                 <div class="space-y-6">
                     <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
@@ -313,8 +315,8 @@ onMounted(() => {
                     <div class="flex flex-wrap gap-4">
                         <a href="#projects" @mouseenter="isHoveringInteractive = true"
                             @mouseleave="isHoveringInteractive = false"
-                            class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-8 py-4 rounded-xl transition-all group hover:shadow-xl hover:shadow-indigo-500/20">
-                            <span class="relative z-10 flex items-center">
+                            class="relative overflow-hidden md:w-auto w-full bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-8 py-4 rounded-xl transition-all group hover:shadow-xl hover:shadow-indigo-500/20">
+                            <span class="relative z-10 flex md:justify-normal justify-center items-center">
                                 Explorer mes projets
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -327,8 +329,8 @@ onMounted(() => {
                         </a>
                         <a href="#contact" @mouseenter="isHoveringInteractive = true"
                             @mouseleave="isHoveringInteractive = false"
-                            class="relative overflow-hidden border-2 border-indigo-600 text-indigo-400 px-8 py-4 rounded-xl transition-all group hover:bg-indigo-600 hover:text-white">
-                            <span class="relative z-10 flex items-center">
+                            class="relative overflow-hidden md:w-auto w-full border-2 border-indigo-600 text-indigo-400 px-8 py-4 rounded-xl transition-all group hover:bg-indigo-600 hover:text-white">
+                            <span class="relative z-10 flex md:justify-normal justify-center items-center">
                                 Contactez-moi
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -460,7 +462,7 @@ onMounted(() => {
         </section>
 
         <!-- Projects Bento Grid -->
-        <section id="projects" class="mb-16 md:mb-24 relative z-10">
+        <section id="projects" class="mb-16 md:mb-24">
             <div class="animate-on-scroll">
                 <div class="flex justify-between items-center mb-8 md:mb-12">
                     <h2 class="text-3xl md:text-4xl font-bold">
@@ -704,7 +706,7 @@ onMounted(() => {
         </section>
 
         <!-- About & Contact -->
-        <section id="about" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch mb-16 relative z-10 h-full">
+        <section id="about" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch mb-16 h-full">
             <div class="grid lg:gap-0 gap-6 h-full">
                 <div class="animate-on-scroll h-full">
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
@@ -849,7 +851,7 @@ onMounted(() => {
         </section>
 
         <!-- Footer -->
-        <footer class="border-t border-gray-800 pt-8 relative z-10">
+        <footer class="border-t border-gray-800 pt-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="text-lg mb-4 md:mb-0">
                     <span class="text-indigo-400">tech</span>Tahirou
