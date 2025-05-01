@@ -270,7 +270,7 @@ onMounted(() => {
                 </a>
             </div>
             <button class="md:hidden z-50" @click="isMenuOpen = !isMenuOpen">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                <svg xmlns="http://www.w3.org/2000/svg" class="md:h-8 md:w-8 h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -281,7 +281,7 @@ onMounted(() => {
                 <div v-if="isMenuOpen"
                     class="fixed inset-0 bg-gray-900/95 backdrop-blur-md z-[99] flex flex-col items-center justify-center space-y-8 text-2xl">
                     <button @click="isMenuOpen = false" class="absolute top-4 right-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        <svg xmlns="http://www.w3.org/2000/svg" class="md:h-8 md:w-8 h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -309,8 +309,7 @@ onMounted(() => {
                     </h1>
                     <p class="text-gray-400 text-lg md:text-xl max-w-2xl">
                         Je conçois des expériences numériques de pointe qui allient une esthétique époustouflante à une
-                        fonctionnalité sans faille.
-                        Je transforme des défis complexes en solutions intuitives.
+                        fonctionnalité sans faille et adore transformer des défis complexes en solutions intuitives.
                     </p>
                     <div class="flex flex-wrap gap-4">
                         <a href="#projects" @mouseenter="isHoveringInteractive = true"
