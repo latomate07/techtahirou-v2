@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch, reactive } from 'vue';
+import { ref, onMounted, watch, reactive, computed } from 'vue';
 
 const selectedProject = ref(null);
 const isMenuOpen = ref(false);
@@ -106,18 +106,6 @@ const selectProject = (project) => {
     }, 100);
 };
 
-// Filter skills based on the search input
-const filterSkills = (e) => {
-    const searchTerm = e.target.value;
-    if (searchTerm) {
-        filteredSkills.value = skills.value.filter(skill =>
-            skill.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    } else {
-        filteredSkills.value = skills.value;
-    }
-};
-
 // Send email
 const sendEmail = async (e) => {
     e.preventDefault();
@@ -183,6 +171,24 @@ const validateForm = () => {
         if (errors[key]) isValid = false;
     }
     return isValid;
+};
+
+// ---- pagination « load‑more » ----
+const visibleCount      = ref(8);           // 8 cartes au départ
+const displayedProjects = computed(() =>
+  projects.value.slice(0, visibleCount.value)
+);
+
+const loadMore = () => {
+  visibleCount.value = Math.min(
+    visibleCount.value + 2,
+    projects.value.length
+  );
+};
+
+const isLargeCard = (index) => {
+  const row = Math.floor(index / 2);
+  return row % 2 === index % 2;
 };
 
 watch(
@@ -513,9 +519,9 @@ onMounted(() => {
 
                 <div v-if="!selectedProject">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div v-for="(project, index) in projects" :key="index" @click="selectProject(project)"
+                        <div v-for="(project, index) in displayedProjects" :key="index" @click="selectProject(project)"
                             class="group relative backdrop-blur-sm bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:bg-white/10 hover:scale-[1.01] cursor-pointer"
-                            :class="{ 'lg:col-span-2': index === 0 || index % 3 === 0 }">
+                            :class="{ 'lg:col-span-2': isLargeCard(index) }">
 
                             <div
                                 class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -574,14 +580,16 @@ onMounted(() => {
                             </div>
                         </div>
                         <!-- button see more -->
-                        <div v-if="index === projects.length - 1" class="flex justify-center mt-6">
-                            <a href="javascript:void(0)"
-                                class="block cursor-not-allowed bg-white/5 mt-4 w-max mx-auto backdrop-blur-md text-white px-6 py-3 rounded-full hover:bg-white/20 transition-colors duration-200 text-sm font-medium flex items-center">
+                        <div v-if="visibleCount < projects.length" class="flex justify-center mt-6">
+                            <button @click="loadMore"
+                                    class="block bg-white/5 w-max mx-auto backdrop-blur-md text-white px-6 py-3 rounded-full hover:bg-white/20 transition-colors duration-200 text-sm font-medium flex items-center">
                                 Voir plus de projets
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M16.023 9.348h4.992M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
                                 </svg>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
