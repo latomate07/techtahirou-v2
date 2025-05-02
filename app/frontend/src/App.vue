@@ -214,346 +214,369 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-900 text-white p-4 md:p-8 overflow-x-hidden">
-        <!-- Custom cursor for interactive elements -->
-        <div class="fixed z-50 w-8 h-8 rounded-full bg-indigo-500/20 pointer-events-none transform -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
-            :style="{
-                left: `${cursorPosition.x}px`,
-                top: `${cursorPosition.y}px`,
-                transform: `translate(-50%, -50%) scale(${isHoveringInteractive ? 2 : 1})`,
-                opacity: isHoveringInteractive ? 1 : 0,
-                transition: 'transform 0.3s ease, opacity 0.2s ease'
-            }"></div>
-
-        <!-- Animated background elements -->
-        <div class="fixed inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-10"></div>
-            <div class="absolute top-0 left-0 w-full h-full bg-radial-gradient opacity-30"></div>
+    <div
+        class="font-['SF_Pro_Display',system-ui,sans-serif] text-neutral-50 bg-black min-h-screen relative overflow-hidden antialiased">
+        <!-- Gradient Background -->
+        <div class="fixed inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-br from-black via-neutral-900 to-black"></div>
+            <div class="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-indigo-900/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-1/3 h-1/3 bg-pink-900/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 left-1/4 w-1/4 h-1/4 bg-purple-900/20 rounded-full blur-3xl"></div>
         </div>
 
-        <!-- Floating particles -->
-        <div class="particles-container fixed inset-0 pointer-events-none overflow-hidden">
-            <div v-for="i in 15" :key="i" class="particle" :style="{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 8 + 2}px`,
-                height: `${Math.random() * 8 + 2}px`,
-                animationDelay: `${Math.random() * 5}s`
-            }"></div>
+        <!-- Noise Texture Overlay -->
+        <div class="fixed inset-0 z-0 opacity-30 mix-blend-soft-light"
+            style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMjAwdjIwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=');">
         </div>
 
-        <!-- Navbar -->
-        <nav class="flex justify-between items-center mb-8 md:mb-16">
-            <div class="md:text-2xl text-md font-bold">
-                <span class="text-indigo-400">tech</span>Tahirou
-            </div>
-            <div class="hidden md:flex space-x-8">
-                <a href="#" class="hover:text-indigo-400 transition-colors relative group">
-                    Accueil
-                    <span
-                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 group-hover:w-full transition-all duration-300"></span>
-                </a>
-                <a href="#projects" class="hover:text-indigo-400 transition-colors relative group">
-                    Projets
-                    <span
-                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 group-hover:w-full transition-all duration-300"></span>
-                </a>
-                <a href="#about" class="hover:text-indigo-400 transition-colors relative group">
-                    À propos
-                    <span
-                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 group-hover:w-full transition-all duration-300"></span>
-                </a>
-                <a href="#contact" class="hover:text-indigo-400 transition-colors relative group">
-                    Contact
-                    <span
-                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 group-hover:w-full transition-all duration-300"></span>
-                </a>
-            </div>
-            <button class="md:hidden z-50" @click="isMenuOpen = !isMenuOpen">
-                <svg xmlns="http://www.w3.org/2000/svg" class="md:h-8 md:w-8 h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
+        <!-- Main Content Container -->
+        <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-            <!-- Mobile menu -->
-            <Transition name="fade" mode="out-in" duration="300">
-                <div v-if="isMenuOpen"
-                    class="fixed inset-0 bg-gray-900/95 backdrop-blur-md z-[99] flex flex-col items-center justify-center space-y-8 text-2xl">
-                    <button @click="isMenuOpen = false" class="absolute top-4 right-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="md:h-8 md:w-8 h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                    <a @click="isMenuOpen = false" href="#" class="hover:text-indigo-400 transition-colors">Accueil</a>
-                    <a @click="isMenuOpen = false" href="#projects"
-                        class="hover:text-indigo-400 transition-colors">Projets</a>
-                    <a @click="isMenuOpen = false" href="#about" class="hover:text-indigo-400 transition-colors">À
-                        propos</a>
-                    <a @click="isMenuOpen = false" href="#contact"
-                        class="hover:text-indigo-400 transition-colors">Contact</a>
-                </div>
-            </Transition>
-        </nav>
-
-        <!-- Hero Section -->
-        <section class="mb-16 md:mb-24">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center animate-on-scroll">
-                <div class="space-y-6">
-                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                        <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">Développeur</span>
-                        <br>Logiciel Web/Mobile
-                    </h1>
-                    <p class="text-gray-400 text-lg md:text-xl max-w-2xl">
-                        Je conçois des expériences numériques de pointe qui allient une esthétique époustouflante à une
-                        fonctionnalité sans faille et adore transformer des défis complexes en solutions intuitives.
-                    </p>
-                    <div class="flex flex-wrap gap-4">
-                        <a href="#projects" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
-                            class="relative overflow-hidden md:w-auto w-full bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-8 py-4 rounded-xl transition-all group hover:shadow-xl hover:shadow-indigo-500/20">
-                            <span class="relative z-10 flex md:justify-normal justify-center items-center">
-                                Explorer mes projets
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </span>
-                            <span
-                                class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                        </a>
-                        <a href="#contact" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
-                            class="relative overflow-hidden md:w-auto w-full border-2 border-indigo-600 text-indigo-400 px-8 py-4 rounded-xl transition-all group hover:bg-indigo-600 hover:text-white">
-                            <span class="relative z-10 flex md:justify-normal justify-center items-center">
-                                Contactez-moi
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                </svg>
-                            </span>
-                            <span
-                                class="absolute inset-0 bg-indigo-600 opacity-0 group-hover:opacity-10 transition-opacity"></span>
-                        </a>
-                    </div>
-
-                    <div class="flex flex-wrap gap-6 pt-4">
-                        <div v-if="currentStatus && currentStatus.length > 0" class="flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-green-500 mr-2 animate-pulse"></div>
-                            <span class="text-sm text-gray-400">
-                                <span class="font-semibold">Statut:</span> {{ currentStatus[0].content }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="relative">
-
-                    <div
-                        class="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-gradient-to-r from-indigo-600/20 to-pink-600/20 blur-xl">
-                    </div>
-                    <div
-                        class="absolute -bottom-8 -right-8 w-40 h-40 rounded-full bg-gradient-to-br from-blue-600/20 to-purple-600/20 blur-xl">
-                    </div>
-
-                    <div
-                        class="relative z-10 bg-gray-900/50 backdrop-blur-lg rounded-3xl border border-gray-700/50 overflow-hidden shadow-2xl shadow-indigo-500/10 transform transition-all duration-500 hover:shadow-indigo-500/20">
-                        <div
-                            class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-indigo-500 via-pink-500 to-purple-500 animate-wave">
+            <!-- Navbar -->
+            <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-black/20 border-b border-white/5">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex h-16 items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="text-lg font-medium tracking-tight">
+                                <span
+                                    class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">tech</span>Tahirou
+                            </div>
                         </div>
 
-                        <div class="p-8 md:p-10">
-                            <div class="flex flex-col items-center mb-6">
-                                <div class="relative">
-                                    <div
-                                        class="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-indigo-600 to-pink-600 p-1">
-                                        <img src="/avatar.jpeg" alt="Avatar"
-                                            class="w-full h-full rounded-full object-cover border-2 border-gray-800/50">
-                                    </div>
-                                    <div
-                                        class="absolute -bottom-2 -right-2 bg-gray-900 rounded-full p-2 border-2 border-gray-800/50">
-                                        <div
-                                            class="w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-cyan-500 flex items-center justify-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white"
-                                                viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                    clip-rule="evenodd" />
+                        <!-- Desktop Menu -->
+                        <div class="hidden md:block">
+                            <div class="flex items-center space-x-8">
+                                <a href="#"
+                                    class="text-white/80 hover:text-white transition-colors duration-200 text-sm font-medium">Accueil</a>
+                                <a href="#projects"
+                                    class="text-white/80 hover:text-white transition-colors duration-200 text-sm font-medium">Projets</a>
+                                <a href="#contact"
+                                    class="text-white/80 hover:text-white transition-colors duration-200 text-sm font-medium">Contact</a>
+                                <div
+                                    class="flex gap-4 backdrop-blur-xl bg-white/5 border border-white/10 rounded-full pl-4 pr-1 py-1">
+                                    <div class="flex items-center space-x-6">
+                                        <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].github : '#'"
+                                            @mouseenter="isHoveringInteractive = true"
+                                            @mouseleave="isHoveringInteractive = false"
+                                            class="text-gray-400 hover:text-indigo-400 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path
+                                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                                             </svg>
+                                        </a>
+                                        <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].linkedin : '#'"
+                                            @mouseenter="isHoveringInteractive = true"
+                                            @mouseleave="isHoveringInteractive = false"
+                                            class="text-gray-400 hover:text-indigo-400 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path
+                                                    d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <a href="/tahirou_fr_cv.pdf" download
+                                        class="bg-white/10 backdrop-blur-md text-white px-4 py-2 rounded-full hover:bg-white/20 transition-colors duration-200 text-sm font-medium flex items-center">
+                                        <span>CV</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Menu Button -->
+                        <div class="md:hidden">
+                            <button @click="isMenuOpen = !isMenuOpen"
+                                class="flex items-center justify-center p-2 rounded-md text-white">
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path v-if="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                    <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu -->
+                <div v-if="isMenuOpen" class="md:hidden bg-black/95 h-screen backdrop-blur-xl">
+                    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        <a href="#" @click="isMenuOpen = false"
+                            class="block px-3 py-4 text-white font-medium border-b border-white/5">Accueil</a>
+                        <a href="#projects" @click="isMenuOpen = false"
+                            class="block px-3 py-4 text-white font-medium border-b border-white/5">Projets</a>
+                        <a href="#about" @click="isMenuOpen = false"
+                            class="block px-3 py-4 text-white font-medium border-b border-white/5">Contact</a>
+                        <a href="/tahirou_fr_cv.pdf" download @click="isMenuOpen = false"
+                            class="flex items-center px-3 py-4 text-white font-medium">
+                            <span>Télécharger CV</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </a>
+                        <div class="flex px-3 py-4 items-center space-x-6">
+                            <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].github : '#'"
+                                @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                                class="text-gray-400 hover:text-indigo-400 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                </svg>
+                            </a>
+                            <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].linkedin : '#'"
+                                @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
+                                class="text-gray-400 hover:text-indigo-400 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Hero Section -->
+            <section class="pt-20 md:pt-32 pb-16 md:pb-20 lg:pb-32">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <!-- Hero Text -->
+                    <div class="max-w-2xl">
+                        <div
+                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm mb-6 border border-white/10">
+                            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse mr-2"></span>
+                            <span class="text-xs font-medium text-white/80">
+                                {{ !!currentStatus ? currentStatus[0].content : 'Disponible pour des projets' }}
+                            </span>
+                        </div>
+
+                        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-8">
+                            <span class="block relative overflow-hidden">
+                                <span class="block transform transition-transform">
+                                    <span
+                                        class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Développeur</span>
+                                </span>
+                            </span>
+                            <span class="block">Logiciel Web/Mobile</span>
+                        </h1>
+
+                        <p class="text-white/70 text-lg sm:text-xl leading-relaxed mb-8 max-w-xl">
+                            Je conçois des expériences numériques de pointe qui allient une esthétique époustouflante à
+                            une fonctionnalité sans faille.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#projects"
+                                class="group relative overflow-hidden rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:shadow-xl hover:shadow-white/20">
+                                <span class="relative z-10">Explorer mes projets</span>
+                                <span
+                                    class="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                            </a>
+
+                            <a href="#contact"
+                                class="group relative overflow-hidden rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white/90 transition-all duration-300 hover:text-white">
+                                <span class="relative z-10">Contactez-moi</span>
+                                <span
+                                    class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Hero Card -->
+                    <div class="relative">
+                        <div class="absolute inset-0 -z-10 animate-pulse-slow">
+                            <div class="absolute -top-10 -left-10 w-48 h-48 rounded-full bg-indigo-600/20 blur-3xl">
+                            </div>
+                            <div class="absolute -bottom-10 -right-10 w-48 h-48 rounded-full bg-purple-600/20 blur-3xl">
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative backdrop-blur-sm bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-40">
+                            </div>
+
+                            <div class="p-4 md:p-8">
+                                <div class="flex flex-col items-center mb-8">
+                                    <!-- Profile Image -->
+                                    <div class="relative mb-4">
+                                        <div
+                                            class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 p-[2px]">
+                                            <img src="/avatar.jpeg" alt="Avatar"
+                                                class="w-full h-full rounded-full object-cover p-[2px] bg-black">
+                                        </div>
+                                        <div
+                                            class="absolute -bottom-1 -right-1 bg-black/40 rounded-full p-1 backdrop-blur-sm">
+                                            <div
+                                                class="w-4 h-4 rounded-full bg-green-400 flex items-center justify-center">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="text-center mb-8">
-                                <h3 class="text-xl md:text-2xl font-bold mb-2">
-                                    {{ !!heroCard ? heroCard[0].name : 'Tahirou Laouan M.' }}
-                                </h3>
-                                <div
-                                    class="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50 mb-4">
-                                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span>
-                                    <span class="text-sm font-medium">En poste chez <span class="text-indigo-400">Shin
-                                            Agency SAS</span></span>
-                                </div>
-                                <p class="text-gray-400 max-w-md mx-auto">
-                                    {{ !!heroCard ? heroCard[0].description : '' }}
-                                </p>
-                            </div>
+                                    <h3 class="text-xl font-medium mb-1">
+                                        {{ !!heroCard ? heroCard[0].name : 'Tahirou Laouan M.' }}
+                                    </h3>
 
-                            <div class="grid grid-cols-3 gap-4 mb-8">
-                                <div class="text-center">
-                                    <div class="text-2xl md:text-3xl font-bold text-indigo-400 mb-1">
-                                        {{ !!heroCard ? heroCard[0].yearsExperience : '3' }}+
+                                    <div
+                                        class="inline-flex items-center px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm mb-3 border border-white/10">
+                                        <span class="text-xs font-medium text-white/80">En poste chez <span
+                                                class="text-indigo-400">Shin Agency SAS</span></span>
                                     </div>
-                                    <div class="text-xs text-gray-400 uppercase tracking-wider">Années XP</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl md:text-3xl font-bold text-pink-400 mb-1">
-                                        {{ !!heroCard ? heroCard[0].projectsCompleted : (!!projects ? projects.length :
-                                            '0') }}
-                                    </div>
-                                    <div class="text-xs text-gray-400 uppercase tracking-wider">Projets</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl md:text-3xl font-bold text-purple-400 mb-1">
-                                        {{ !!heroCard ? heroCard[0].clientSatisfaction : '100' }}%
-                                    </div>
-                                    <div class="text-xs text-gray-400 uppercase tracking-wider">Satisfaction</div>
-                                </div>
-                            </div>
 
-                            <div class="text-center">
-                                <button
-                                    class="relative cursor-pointer overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-6 py-3 rounded-lg group transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20">
-                                    <a href="/tahirou_fr_cv.pdf" download
-                                        class="relative z-10 flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        Consulter mon CV
-                                    </a>
-                                    <span
-                                        class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                                </button>
-                            </div>
-                        </div>
+                                    <p class="text-white/60 text-sm mb-6 text-center">
+                                        {{ !!heroCard ? heroCard[0].description : 
+                                        'Développeur passionné spécialisé dans la création d\'expériences web et mobiles innovantes.' }}
+                                    </p>
+                                </div>
 
-                        <!-- Effet de particules -->
-                        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-                            <div
-                                class="absolute top-1/4 left-1/4 w-2 h-2 rounded-full bg-indigo-500/30 animate-float-1">
-                            </div>
-                            <div class="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-pink-500/30 animate-float-2">
-                            </div>
-                            <div
-                                class="absolute bottom-1/4 right-1/3 w-2 h-2 rounded-full bg-purple-500/30 animate-float-3">
+                                <div class="grid grid-cols-3 gap-4 mb-8">
+                                    <div class="backdrop-blur-sm bg-white/5 rounded-2xl p-4 border border-white/10">
+                                        <div class="text-2xl font-bold text-indigo-400 mb-1">
+                                            {{ !!heroCard ? heroCard[0].yearsExperience : '3' }}+
+                                        </div>
+                                        <div class="text-xs text-white/60 font-medium">Années XP</div>
+                                    </div>
+
+                                    <div class="backdrop-blur-sm bg-white/5 rounded-2xl p-4 border border-white/10">
+                                        <div class="text-2xl font-bold text-purple-400 mb-1">
+                                            {{ !!heroCard ? heroCard[0].projectsCompleted : (!!projects ? projects.length : '0') }}+
+                                        </div>
+                                        <div class="text-xs text-white/60 font-medium">Projets</div>
+                                    </div>
+
+                                    <div class="backdrop-blur-sm bg-white/5 rounded-2xl p-4 border border-white/10">
+                                        <div class="text-2xl font-bold text-pink-400 mb-1">
+                                            {{ !!heroCard ? heroCard[0].clientSatisfaction : '100' }}%
+                                        </div>
+                                        <div class="text-xs text-white/60 font-medium">Satisfaction</div>
+                                    </div>
+                                </div>
+
+                                <a href="/tahirou_fr_cv.pdf" download
+                                    class="w-full inline-flex items-center relative z-[90] justify-center px-6 py-3 border border-white/10 rounded-full text-sm font-medium text-white/90 hover:bg-white/10 transition-colors duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Télécharger mon CV
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Projects Bento Grid -->
-        <section id="projects" class="mb-16 md:mb-24">
-            <div class="animate-on-scroll">
-                <div class="flex justify-between items-center mb-8 md:mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
-                            Projets
-                        </span>
-                        réalisés
-                    </h2>
-                    <div class="flex items-center">
-                        <span class="text-indigo-400 mr-2 hidden md:block">
-                            Tout explorer
-                        </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
+            <!-- Tech Stack Section -->
+            <section class="py-16">
+                <div class="flex flex-col items-center mb-12">
+                    <div
+                        class="inline-flex items-center px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm mb-4 border border-white/10">
+                        <span class="text-xs font-medium text-white/80">Technologies</span>
                     </div>
+                    <h2 class="text-3xl font-bold text-center mb-2">Stack technologique</h2>
+                    <p class="text-white/60 text-lg text-center max-w-xl">Une sélection des technologies que j'utilise
+                        quotidiennement</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+                    <div v-for="skill in skills" :key="skill"
+                        class="group py-4 px-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/10 shadow-lg">
+                        <span class="text-sm font-medium group-hover:text-indigo-400 transition-colors">{{ skill
+                            }}</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="py-16">
+                <div class="flex flex-col items-center mb-12">
+                    <div
+                        class="inline-flex items-center px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm mb-4 border border-white/10">
+                        <span class="text-xs font-medium text-white/80">Portfolio</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-center mb-2">Projets sélectionnés</h2>
+                    <p class="text-white/60 text-lg text-center max-w-xl">Une collection de mes travaux les plus récents
+                        et significatifs</p>
                 </div>
 
                 <div v-if="!selectedProject">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div v-for="(project, index) in projects" :key="index" @click="selectProject(project)"
-                            @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
-                            :class="[
-                                'bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 hover:bg-gray-700/50 cursor-pointer transition-all transform hover:scale-[1.01] group border border-gray-700/50 relative overflow-hidden',
-                                (index === 0 || index % 4 === 0) ? 'col-span-1 md:col-span-2 row-span-2 hover:border-indigo-500/30' : 'hover:border-gray-700/50'
-                            ]">
+                            class="group relative backdrop-blur-sm bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:bg-white/10 hover:scale-[1.01] cursor-pointer"
+                            :class="{ 'lg:col-span-2': index === 0 || index % 4 === 0 }">
 
-                            <!-- Background gradient -->
                             <div
-                                class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                             </div>
 
-                            <!-- Image block -->
-                            <div :class="[
-                                'relative mb-4 overflow-hidden rounded-2xl border border-gray-700/50',
-                                (index === 0 || index % 4 === 0) ? 'h-64 md:h-96' : 'h-40'
-                            ]">
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent z-10">
-                                </div>
+                            <!-- Project Image -->
+                            <div class="h-56 md:h-64 overflow-hidden relative" :class="(index === 0 || index % 4 === 0) ? 'h-64 md:h-96' : 'h-40'">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
 
-                                <!-- Badge category -->
-                                <div :class="[
-                                    'absolute z-20 flex justify-between items-center',
-                                    (index === 0 || index % 4 === 0) ? 'bottom-4 left-4 right-4' : 'bottom-2 left-2'
-                                ]">
-                                    <span
-                                        class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white text-xs px-3 py-1 rounded-full">
-                                        {{ project.category }}
-                                    </span>
-                                    <span v-if="(index === 0 || index % 4 === 0)" class="text-white/80 text-sm">{{
-                                        project.date }}</span>
-                                </div>
-
-                                <!-- Fixed SVG for all -->
                                 <div
-                                    class="w-full h-full bg-gradient-to-br from-indigo-900/30 to-gray-800 flex items-center justify-center">
+                                    class="w-full h-full flex items-center justify-center bg-gradient-to-br from-black/80 to-gray-800/80">
                                     <svg v-if="!project.image" xmlns="http://www.w3.org/2000/svg"
-                                        class="h-16 w-16 text-indigo-500/30" fill="none" viewBox="0 0 24 24"
+                                        class="h-16 w-16 text-white/20" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                     <img v-else :src="project.image" alt="Project Image"
-                                        class="w-full h-full object-cover rounded-2xl">
+                                        class="w-full h-full object-cover">
+                                </div>
+
+                                <!-- Category Badge -->
+                                <div class="absolute bottom-4 left-4 z-20" :class="(index === 0 || index % 4 === 0) ? 'bottom-4 left-4 right-4' : 'bottom-2 left-2'">
+                                    <span
+                                        class="bg-white/10 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full border border-white/10">
+                                        {{ project.category }}
+                                    </span>
                                 </div>
                             </div>
 
-                            <!-- Title -->
-                            <h3 :class="[
-                                'font-bold relative z-10 transition-colors',
-                                (index === 0 || index % 4 === 0) ? 'text-xl md:text-2xl lg:text-3xl group-hover:text-indigo-400' : 'text-lg group-hover:text-pink-400'
-                            ]">
-                                {{ project.title }}
-                            </h3>
+                            <div class="p-6">
+                                <h3 class="text-xl font-medium mb-2 group-hover:text-indigo-400 transition-colors">{{
+                                    project.title }}</h3>
+                                <p class="text-white/60 text-sm mb-4">{{ project.shortDesc }}</p>
 
-                            <!-- Short description -->
-                            <p class="text-gray-400 text-sm mt-2 relative z-10">{{ project.shortDesc }}</p>
-
-                            <!-- Technologies tags -->
-                            <div v-if="project.tech?.length" class="mt-4 flex flex-wrap gap-2 relative z-10">
-                                <span v-for="(tech, i) in project.tech" :key="i"
-                                    class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">
-                                    {{ tech.content }}
-                                </span>
+                                <!-- Technologies -->
+                                <div v-if="project.tech?.length" class="flex flex-wrap gap-2">
+                                    <span v-for="(tech, i) in project.tech.slice(0, 3)" :key="i"
+                                        class="text-xs text-white/60">
+                                        {{ tech.content }}{{ i < Math.min(project.tech.length, 3) - 1 ? ' • ' : '' }}
+                                            </span>
+                                            <span v-if="project.tech.length > 3" class="text-xs text-white/60">+{{
+                                                project.tech.length - 3 }}</span>
+                                </div>
                             </div>
 
+                            <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div
+                                    class="h-8 w-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Project Detail View -->
                 <div v-else
                     class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 transition-all border border-gray-700/50">
                     <div class="flex justify-between items-center mb-6">
@@ -701,182 +724,115 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- About & Contact -->
-        <section id="about" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch mb-16 h-full">
-            <div class="grid lg:gap-0 gap-6 h-full">
-                <div class="animate-on-scroll h-full">
-                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
-                        <h2 class="text-2xl md:text-3xl font-bold mb-4">
-                            <span
-                                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">Parcours</span>
-                            Professionnel
-                        </h2>
-                        <p v-if="abouts && abouts.length > 0" v-html="abouts[0].content" class="text-gray-400 mb-4">
-                        </p>
+            <!-- Contact Section -->
+            <section id="contact" class="py-16">
+                <div class="flex flex-col items-center mb-12">
+                    <div
+                        class="inline-flex items-center px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm mb-4 border border-white/10">
+                        <span class="text-xs font-medium text-white/80">Collaboration</span>
                     </div>
-                </div>
-
-                <div class="animate-on-scroll h-full">
-                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50 h-full">
-                        <h2 class="text-2xl md:text-3xl font-bold mb-4">
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
-                                Compétences
-                            </span> & Outils
-                        </h2>
-                        <!-- add search bar -->
-                        <div class="mb-4">
-                            <input @input="filterSkills" type="text" placeholder="Rechercher une compétence"
-                                class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            <span class="text-gray-500 text-xs">
-                                Tapez ci-dessus pour rechercher une compétence ou un outil
-                            </span>
-                        </div>
-                        <div>
-                            <ul v-if="filteredSkills && filteredSkills.length > 0"
-                                class="flex flex-wrap items-center justify-around gap-2">
-                                <li v-for="skill in filteredSkills"
-                                    class="block w-max p-2 rounded-full border border-gray-700/50 bg-gray-700/50">
-                                    <span>
-                                        {{ skill }}
-                                    </span>
-                                </li>
-                            </ul>
-
-                            <p v-else>
-                                <span class="text-gray-400">Aucune compétence spécifiée.</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="contact" class="animate-on-scroll h-full">
-                <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl h-full p-6 border border-gray-700/50">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-4">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-indigo-500">
-                            Entrons
-                        </span> en contact
-                    </h2>
-                    <p class="text-gray-400 mb-6">
+                    <h2 class="text-3xl font-bold text-center mb-2">Travaillons ensemble</h2>
+                    <p class="text-white/60 text-lg text-center max-w-xl">
                         Vous avez un projet en tête ou souhaitez discuter d'opportunités potentielles ?
                         N'hésitez pas à me contacter !
                     </p>
+                </div>
 
-                    <form @submit.prevent="sendEmail" class="space-y-4 mb-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-400 mb-1">Nom</label>
-                                <input type="text" id="name" v-model="contactForm.name"
-                                    class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="Votre nom">
-                                <p v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</p>
+                <div class="grid">
+                    <div
+                        class="backdrop-blur-sm bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl p-8">
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-medium mb-2">Envoyez-moi un message</h3>
+                            <p class="text-white/60">Je vous répondrai dans les plus brefs délais</p>
+                        </div>
+
+                        <form @submit.prevent="sendEmail" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-white/80 mb-2">Nom</label>
+                                    <input v-model="contactForm.name" type="text" id="name" name="name" autocomplete="name"
+                                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl placeholder-white/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                                        placeholder="Votre nom">
+                                     <p v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</p>
+                                </div>
+                                <div>
+                                    <label for="email"
+                                        class="block text-sm font-medium text-white/80 mb-2">Email</label>
+                                    <input v-model="contactForm.email" type="email" id="email" name="email" autocomplete="email"
+                                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl placeholder-white/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                                        placeholder="votre@email.com">
+                                    <p v-if="errors.email" class="text-red-500 text-sm">{{ errors.email }}</p>
+                                </div>
                             </div>
+
                             <div>
-                                <label for="email" class="block text-sm font-medium text-gray-400 mb-1">Email</label>
-                                <input type="email" id="email" v-model="contactForm.email"
-                                    class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="Votre email">
-                                <p v-if="errors.email" class="text-red-500 text-sm">{{ errors.email }}</p>
+                                <label for="subject" class="block text-sm font-medium text-white/80 mb-2">Sujet</label>
+                                <input v-model="contactForm.subject" type="text" id="subject" name="subject"
+                                    class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl placeholder-white/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                                    placeholder="Comment puis-je vous aider ?">
+                                <p v-if="errors.subject" class="text-red-500 text-sm">{{ errors.subject }}</p>
                             </div>
-                        </div>
-                        <div>
-                            <label for="subject" class="block text-sm font-medium text-gray-400 mb-1">Sujet</label>
-                            <input type="text" id="subject" v-model="contactForm.subject"
-                                class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                placeholder="Sujet">
-                            <p v-if="errors.subject" class="text-red-500 text-sm">{{ errors.subject }}</p>
-                        </div>
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-gray-400 mb-1">Message</label>
-                            <textarea id="message" rows="4" v-model="contactForm.message"
-                                class="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                placeholder="Dites-moi tout..."></textarea>
-                            <p v-if="errors.message" class="text-red-500 text-sm">{{ errors.message }}</p>
-                        </div>
-                        <button type="submit" @mouseenter="isHoveringInteractive = true"
-                            @mouseleave="isHoveringInteractive = false"
-                            class="w-full cursor-pointer relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white py-3 rounded-lg transition-all group hover:shadow-lg hover:shadow-indigo-500/20">
-                            <span class="relative z-10">
-                                Envoyer
+
+                            <div>
+                                <label for="message"
+                                    class="block text-sm font-medium text-white/80 mb-2">Message</label>
+                                <textarea v-model="contactForm.message" id="message" name="message" rows="5"
+                                    class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl placeholder-white/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                                    placeholder="Décrivez votre projet ou votre demande..."></textarea>
+                                <p v-if="errors.message" class="text-red-500 text-sm">{{ errors.message }}</p>
+                            </div>
+
+                            <button type="submit"
+                                class="flex cursor-pointer group relative w-max mx-auto justify-center overflow-hidden rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:shadow-xl hover:shadow-white/20 w-full">
+                                <span class="relative z-10">Envoyer le message</span>
+                                <span
+                                    class="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                            </button>
+                            <p v-if="successMessage" class="text-green-500 text-sm text-center mt-1">{{ successMessage }}</p>
+                            <p v-if="errorMessage" class="text-red-500 text-sm text-center mt-1">{{ errorMessage }}</p>
+                            <p v-if="isSubmitting" class="animate-pulse text-gray-400 text-sm text-center mt-1">Envoi en cours...</p>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <!-- Footer -->
+            <footer class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="text-lg font-medium tracking-tight">
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+                                tech
                             </span>
-                            <span
-                                class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                        </button>
-                        <p v-if="successMessage" class="text-green-500 text-sm text-center mt-2">{{ successMessage }}
-                        </p>
-                        <p v-if="errorMessage" class="text-red-500 text-sm text-center mt-2">{{ errorMessage }}</p>
-                        <p v-if="isSubmitting" class="text-gray-400 text-sm text-center mt-2">Envoi en cours...</p>
-                    </form>
-
-                    <div class="grid grid-cols-2 gap-4">
+                            Tahirou
+                        </div>
+                    </div>
+                    <div class="flex space-x-6">
                         <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].github : '#'"
                             @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
-                            target="_blank"
-                            class="flex items-center justify-center bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="currentColor"
+                            class="text-gray-400 hover:text-indigo-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
                                 viewBox="0 0 24 24">
                                 <path
                                     d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                             </svg>
-                            <span>GitHub</span>
                         </a>
                         <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].linkedin : '#'"
                             @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
-                            target="_blank"
-                            class="flex items-center justify-center bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="currentColor"
+                            class="text-gray-400 hover:text-indigo-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
                                 viewBox="0 0 24 24">
                                 <path
                                     d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
                             </svg>
-                            <span>LinkedIn</span>
-                        </a>
-                        <a :href="contactInfos && contactInfos?.length > 0 ? 'mailto:' + contactInfos[0].email : '#'"
-                            @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
-                            class="flex items-center justify-center col-span-2 bg-gray-700/50 p-4 rounded-xl hover:bg-gray-600/50 transition-colors border border-gray-600/50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                            <span>Email</span>
                         </a>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="border-t border-gray-800 pt-8">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="text-lg mb-4 md:mb-0">
-                    <span class="text-indigo-400">tech</span>Tahirou
+                <div class="text-center text-gray-500 text-sm mt-6 pb-4">
+                    © 2025 TechTahirou. All rights reserved.
                 </div>
-                <div class="flex space-x-6">
-                    <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].github : '#'"
-                        @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
-                        class="text-gray-400 hover:text-indigo-400 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                        </svg>
-                    </a>
-                    <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].linkedin : '#'"
-                        @mouseenter="isHoveringInteractive = true" @mouseleave="isHoveringInteractive = false"
-                        class="text-gray-400 hover:text-indigo-400 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div class="text-center text-gray-500 text-sm mt-6 pb-4">
-                © 2025 TechTahirou. All rights reserved.
-            </div>
-        </footer>
+            </footer>
+        </div>
     </div>
 </template>
