@@ -515,14 +515,14 @@ onMounted(() => {
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div v-for="(project, index) in projects" :key="index" @click="selectProject(project)"
                             class="group relative backdrop-blur-sm bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:bg-white/10 hover:scale-[1.01] cursor-pointer"
-                            :class="{ 'lg:col-span-2': index === 0 || index % 4 === 0 }">
+                            :class="{ 'lg:col-span-2': index === 0 || index % 3 === 0 }">
 
                             <div
                                 class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                             </div>
 
                             <!-- Project Image -->
-                            <div class="h-56 md:h-64 overflow-hidden relative" :class="(index === 0 || index % 4 === 0) ? 'h-64 md:h-96' : 'h-40'">
+                            <div class="h-56 md:h-64 overflow-hidden relative">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
 
                                 <div
@@ -538,7 +538,7 @@ onMounted(() => {
                                 </div>
 
                                 <!-- Category Badge -->
-                                <div class="absolute bottom-4 left-4 z-20" :class="(index === 0 || index % 4 === 0) ? 'bottom-4 left-4 right-4' : 'bottom-2 left-2'">
+                                <div class="absolute bottom-4 left-4 z-20">
                                     <span
                                         class="bg-white/10 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full border border-white/10">
                                         {{ project.category }}
@@ -573,17 +573,27 @@ onMounted(() => {
                                 </div>
                             </div>
                         </div>
+                        <!-- button see more -->
+                        <div v-if="index === projects.length - 1" class="flex justify-center mt-6">
+                            <a href="javascript:void(0)"
+                                class="block cursor-not-allowed bg-white/5 mt-4 w-max mx-auto backdrop-blur-md text-white px-6 py-3 rounded-full hover:bg-white/20 transition-colors duration-200 text-sm font-medium flex items-center">
+                                Voir plus de projets
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Project Detail View -->
                 <div v-else
-                    class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 transition-all border border-gray-700/50">
+                    class="bg-white/5 backdrop-blur-sm rounded-3xl p-6 transition-all border border-gray-700/50">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-2xl md:text-3xl font-bold">{{ selectedProject.title }}</h2>
                         <button @click="selectedProject = null" @mouseenter="isHoveringInteractive = true"
                             @mouseleave="isHoveringInteractive = false"
-                            class="bg-gray-700/50 hover:bg-gray-600/50 p-2 rounded-lg transition-colors border border-gray-600/50">
+                            class="bg-white/15 hover:bg-gray-600/50 p-2 rounded-lg transition-colors border border-gray-600/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
