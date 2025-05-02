@@ -407,7 +407,7 @@ onMounted(() => {
                                 class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-40">
                             </div>
 
-                            <div class="p-4 md:p-8">
+                            <div class="relative z-[90] p-4 md:p-8">
                                 <div class="flex flex-col items-center mb-8">
                                     <!-- Profile Image -->
                                     <div class="relative mb-4">
