@@ -128,7 +128,7 @@ const sendEmail = async (e) => {
             },
             body: JSON.stringify({
                 to: API_EMAIL_RECEIVER,
-                from: contactForm.email,
+                from: API_EMAIL_RECEIVER,
                 subject: 'techTahirou - Nouveau message de contact',
                 text: `Name: ${contactForm.name}\nEmail: ${contactForm.email}\nSubject: ${contactForm.subject}\nMessage: ${contactForm.message}`,
                 html: `
