@@ -365,7 +365,7 @@ onMounted(() => {
                             </span>
                         </div>
 
-                        <h1 class="text-[2rem] sm:text-5xl lg:text-7xl font-bold tracking-tight leading-tight mb-8">
+                        <h1 class="text-[2rem] sm:text-5xl lg:text-7xl font-bold tracking-tight leading-tight mb-4 md:mb-8">
                             <span class="block relative overflow-hidden">
                                 <span class="block transform transition-transform">
                                     <span
