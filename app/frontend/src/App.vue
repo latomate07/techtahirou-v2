@@ -579,18 +579,18 @@ onMounted(() => {
                                 </div>
                             </div>
                         </div>
-                        <!-- button see more -->
-                        <div v-if="visibleCount < projects.length" class="flex justify-center mt-6">
-                            <button @click="loadMore"
-                                    class="block bg-white/5 w-max mx-auto backdrop-blur-md text-white px-6 py-3 rounded-full hover:bg-white/20 transition-colors duration-200 text-sm font-medium flex items-center">
+                    </div>
+                    <!-- button see more -->
+                    <div v-if="visibleCount < projects.length" class="flex justify-center mt-6">
+                        <button @click="loadMore"
+                                class="bg-white/5 w-max mx-auto backdrop-blur-md text-white px-6 py-3 rounded-full hover:bg-white/20 transition-colors duration-200 text-sm font-medium flex items-center justify-center">
                                 Voir plus de projets
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
-                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M16.023 9.348h4.992M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
-                                </svg>
-                            </button>
-                        </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.023 9.348h4.992M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -616,7 +616,7 @@ onMounted(() => {
                                 <div
                                     class="w-full h-64 md:h-80 bg-gradient-to-br from-indigo-900/30 to-gray-800 flex items-center justify-center">
                                     <svg v-if="!selectedProject.image" xmlns="http://www.w3.org/2000/svg"
-                                        class="h-16 w-16 text-indigo-500/30" fill="none" viewBox="0 0 24 24"
+                                        class="h-16 w-16 text-white/20" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -628,25 +628,25 @@ onMounted(() => {
 
                             <div class="flex flex-wrap gap-2 mb-6">
                                 <span v-for="(tech, i) in selectedProject.tech" :key="i"
-                                    class="bg-gray-700/50 text-xs px-3 py-1 rounded-full border border-gray-600/50">
+                                    class="bg-white/15 backdrop-blur-md text-xs px-3 py-1 rounded-full border border-gray-600/50">
                                     {{ tech.content }}
                                 </span>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4 mb-6">
-                                <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600/50">
+                                <div class="bg-white/15 backdrop-blur-md p-4 rounded-xl border border-gray-600/50">
                                     <h4 class="text-gray-400 text-sm">Categorie</h4>
                                     <p>{{ selectedProject.category }}</p>
                                 </div>
-                                <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600/50">
+                                <div class="bg-white/15 backdrop-blur-md p-4 rounded-xl border border-gray-600/50">
                                     <h4 class="text-gray-400 text-sm">Date</h4>
                                     <p>{{ selectedProject.date }}</p>
                                 </div>
-                                <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600/50">
+                                <div class="bg-white/15 backdrop-blur-md p-4 rounded-xl border border-gray-600/50">
                                     <h4 class="text-gray-400 text-sm">Client</h4>
                                     <p>{{ selectedProject.client }}</p>
                                 </div>
-                                <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600/50">
+                                <div class="bg-white/15 backdrop-blur-md p-4 rounded-xl border border-gray-600/50">
                                     <h4 class="text-gray-400 text-sm">Role</h4>
                                     <p>{{ selectedProject.role }}</p>
                                 </div>
@@ -654,7 +654,7 @@ onMounted(() => {
 
                             <div class="flex flex-wrap gap-4">
                                 <div class="flex flex-col">
-                                    <a :href="selectedProject.liveLink" target="_blank"
+                                    <a :href="!!selectedProject.liveLink ? selectedProject.liveLink : 'javascript:void(0)'" target="_blank"
                                         @mouseenter="isHoveringInteractive = true"
                                         @mouseleave="isHoveringInteractive = false"
                                         class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-6 py-3 rounded-lg transition-all group hover:shadow-lg hover:shadow-indigo-500/20">
@@ -669,7 +669,7 @@ onMounted(() => {
                                         <span
                                             class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                                     </a>
-                                    <span v-if="!selectedProject.liveLink || selectedProject.liveLink == null"
+                                    <span v-if="!selectedProject.liveLink || selectedProject.liveLink == null || selectedProject.liveLink == '#'"
                                         class="text-xs mt-1">
                                         <span class="text-gray-400">
                                             Lien inaccessible.
@@ -677,7 +677,7 @@ onMounted(() => {
                                     </span>
                                 </div>
                                 <div class="flex flex-col">
-                                    <a :href="selectedProject.repoLink" target="_blank"
+                                    <a :href="!!selectedProject.repoLink ? selectedProject.repoLink : 'javascript:void(0)'" target="_blank"
                                         @mouseenter="isHoveringInteractive = true"
                                         @mouseleave="isHoveringInteractive = false"
                                         class="relative overflow-hidden border border-indigo-600 text-indigo-400 px-6 py-3 rounded-lg transition-all group hover:bg-indigo-600 hover:text-white">
@@ -692,7 +692,7 @@ onMounted(() => {
                                         <span
                                             class="absolute inset-0 bg-indigo-600 opacity-0 group-hover:opacity-10 transition-opacity"></span>
                                     </a>
-                                    <span v-if="!selectedProject.repoLink || selectedProject.repoLink == null"
+                                    <span v-if="!selectedProject.repoLink || selectedProject.repoLink == null || selectedProject.repoLink == '#'"
                                         class="text-xs mt-1">
                                         <span class="text-gray-400">
                                             Lien inaccessible.
@@ -723,7 +723,7 @@ onMounted(() => {
                             </div>
 
                             <h3 class="text-xl font-bold mt-6 mb-4">Défis et solutions</h3>
-                            <div class="bg-gray-700/50 p-4 rounded-xl mb-6 border border-gray-600/50">
+                            <div class="bg-white/15 backdrop-blur-md p-4 rounded-xl mb-6 border border-gray-600/50">
                                 <h4 class="font-bold">Défis</h4>
                                 <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
                                     <li v-for="(challenge, i) in selectedProject.challenges" :key="i">
@@ -731,7 +731,7 @@ onMounted(() => {
                                     </li>
                                 </ul>
                             </div>
-                            <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600/50">
+                            <div class="bg-white/15 backdrop-blur-md p-4 rounded-xl border border-gray-600/50">
                                 <h4 class="font-bold">Solutions</h4>
                                 <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
                                     <li v-for="(solution, i) in selectedProject.solutions" :key="i">
