@@ -261,7 +261,7 @@ onMounted(() => {
                                     class="flex gap-4 backdrop-blur-xl bg-white/5 border border-white/10 rounded-full pl-4 pr-1 py-1">
                                     <div class="flex items-center space-x-6">
                                         <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].github : '#'"
-                                            @mouseenter="isHoveringInteractive = true"
+                                            @mouseenter="isHoveringInteractive = true" target="_blank"
                                             @mouseleave="isHoveringInteractive = false"
                                             class="text-gray-400 hover:text-indigo-400 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
@@ -271,7 +271,7 @@ onMounted(() => {
                                             </svg>
                                         </a>
                                         <a :href="contactInfos && contactInfos?.length > 0 ? contactInfos[0].linkedin : '#'"
-                                            @mouseenter="isHoveringInteractive = true"
+                                            @mouseenter="isHoveringInteractive = true" target="_blank"
                                             @mouseleave="isHoveringInteractive = false"
                                             class="text-gray-400 hover:text-indigo-400 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
@@ -539,7 +539,7 @@ onMounted(() => {
                                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                     <img v-else :src="project.image" alt="Project Image"
-                                        class="w-full h-full object-cover">
+                                        class="w-full h-full object-fit object-center">
                                 </div>
 
                                 <!-- Category Badge -->
@@ -621,7 +621,7 @@ onMounted(() => {
                                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                     <img v-else :src="selectedProject.image" alt="Project Image"
-                                        class="w-full h-full object-cover rounded-2xl">
+                                        class="w-full h-full object-cover object-fit object-center rounded-2xl">
                                 </div>
                             </div>
 
